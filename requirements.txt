@@ -1,0 +1,7 @@
+SQLAlchemy==0.9.2
+argparse==1.2.1
+backports.ssl-match-hostname==3.4.0.2
+distribute==0.6.24
+simplejson==3.3.2
+tornado==3.2
+wsgiref==0.1.2

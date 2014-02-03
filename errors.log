@@ -1,0 +1,10 @@
+ERROR:root:cant divide by zero
+Traceback (most recent call last):
+  File "db_base.py", line 13, in <module>
+    1/0
+ZeroDivisionError: integer division or modulo by zero
+ERROR:root:cant divide by zero
+Traceback (most recent call last):
+  File "db_base.py", line 13, in <module>
+    1/0
+ZeroDivisionError: integer division or modulo by zero
