@@ -29,9 +29,9 @@ class BaseDBHandler(object):
     """
 
     def parse_query_data(self, query, iter):
-        if not tuple or type(iter) not in (tuple, list):
+        if type(iter) not in (tuple, list):
             raise TypeError("iter must be iterable type : list or tuple")
-        if query is None:
+        if not query:
             return dict()
         return dict(zip(iter, query[1:]))
 
@@ -82,7 +82,6 @@ class BaseDBHandler(object):
     def delete_row(self, column, value):
         delete_q = users.delete().where(column == value)
         self.conn.execute(delete_q)
-
 
 
 
@@ -143,9 +142,6 @@ class UserDatabaseHandler(BaseDBHandler):
     def list_all_users(self, limit, offset):
         return self.get_all_rows(users, USER_FIELDS, limit, offset)
 
-    """
-    TODO : test it !!!
-    """
 
     def get_user_products(self, uuid):
 
@@ -160,11 +156,23 @@ class UserDatabaseHandler(BaseDBHandler):
 
         return self.conn.execute(user_products).fetchall()
 
+    def increase_bought_qty(self, amount, id):
+        """
+        Increases given product quantity
+        accepts bought products id, and amount to add
+        """
+        current = self.conn.execute(select([bought_products.c.quantity])\
+                                    .where(bought_products.c.bought_id == id)).scalar()
+        update = bought_products.update()\
+                .where(bought_products.c.bought_id == id)\
+                .values(quantity = (current + amount))
+        self.conn.execute(update)
+
 
     def check_user_bought_product(self, user_uuid, product_uuid):
 
         """
-        Returns Falsy value if user has not buught product with given uuid else returns 
+        Returns Falsy value if user has not bought product with given uuid else returns 
         bought product\'s id
         """
 
@@ -181,21 +189,28 @@ class UserDatabaseHandler(BaseDBHandler):
         res = self.conn.execute(sel).scalar()
         return res
 
-    def get_bought_product(self, product_uuid):
-        return self.conn.execute(select([bought_products]).select_from(bought_products.join(products)).where(products.c.product_uuid == product_uuid))
+    def create_bought_product(self, qty, user_uuid, product_uuid):
+        """
+        create new bought item given product_uuid and user_uuid 
+        """
+        user_id = self.conn.execute(select([users.c.user_id]).where(users.c.user_uuid == user_uuid)).scalar()
+        product_id = self.conn.execute(select([products.c.product_id]).where(products.c.product_uuid == product_uuid)).scalar()
+        if product_id and user_id:
+            ins = bought_products.insert().values(quantity, user_id, product_id)
+        else:
+            return
 
-    def add_bought_product(self, quantity, user_uuid, products_uuid):
+
+    def add_bought_product(self, quantity, user_uuid, product_uuid):
 
         ## check if user has bought this product already
+        bought = self.check_user_bought_product(user_uuid, product_uuid)
         ## if yes increment quantity 
+        if bought:
+            self.increase_bought_qty(quantity, bought)
         ## else create item
-        user_id = users.select(users.c.user_id).where(users.c.user_uuid == user_uuid).execute()[0]
-        product_id = products.select(products.c.product_id).where(products.c.product_uuid == product_uuid).execute()[0]
-        if user_id and product_id and quantity >= 0 and type(quantity) == int:
-            buy_product = bought_products.insert(quantity = quantity, user_id = user_id, product_id = product_id)
-            self.conn.execute(buy_product)
         else:
-            return False
+            self.create_bought_product(quantity, user_uuid, product_uuid)
 
     def _delete_all_users(self):
         del_all = users.delete()
@@ -242,6 +257,8 @@ class ProductDatabaseHandler(BaseDBHandler):
     def get_product(self, uuid):
         return self.get_row(products.c.product_uuid, uuid)
 
+
+
     def delete_product(self, uuid):
         self.delete_row(products.c.product_uuid, uuid)
 
@@ -257,6 +274,24 @@ class ProductDatabaseHandler(BaseDBHandler):
 
     def list_all_products(self, limit, offset):
         return self.get_all_rows(products, PRODUCT_FIELDS, limit, offset)
+
+    def get_top_selling_products(self, limit=10):
+        """
+        returns dict containing:
+            product_name: amount_sold
+        """
+        sel = select([func.sum(bought_products.c.quantity).label("suma"), products.c.product_name])\
+                .select_from(products.join(bought_products))\
+                .group_by(bought_products.c.product_id)\
+                .order_by(desc("suma")).limit(limit)
+
+        top_products = self.conn.execute(sel).fetchall()
+
+        result = dict()
+        for product_item in top_products:
+            result[product_item[1]] = product_item[0]
+
+        return result
 
     def _delete_all_products(self):
         del_all = products.delete()

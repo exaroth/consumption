@@ -10,6 +10,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import select, exists
 import uuid
 
+from sqlalchemy import distinct, func
+
 
 
 class TestDBUtilities(unittest.TestCase):
@@ -231,19 +233,45 @@ class TestProductsDB(unittest.TestCase):
 
         self.assertTrue(self.user_handler.check_user_bought_product(self.uuid1, self.product_uuid1))
         self.assertFalse(self.user_handler.check_user_bought_product(self.uuid2, self.product_uuid3))
+        self.assertEquals(1, self.user_handler.check_user_bought_product(self.uuid1, self.product_uuid1))
+        self.assertEquals(2, self.user_handler.check_user_bought_product(self.uuid1, self.product_uuid2))
 
         self.assertFalse(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid2))
         self.assertFalse(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid3))
         self.assertTrue(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid1))
+        self.assertEquals(4, self.user_handler.check_user_bought_product(self.uuid2, self.product_uuid1))
 
         self.assertFalse(self.user_handler.check_user_bought_product(str(uuid.uuid4()), self.product_uuid1))
         self.assertFalse(self.user_handler.check_user_bought_product(self.uuid1, str(uuid.uuid4())))
 
+    def test_increasing_item_quantity(self):
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+
+        # konrad buys 1 product
+        self.user_handler.increase_bought_qty(1, 1)
+        sel = select([bought_products.c.quantity]).where(bought_products.c.bought_id == 1)
+        val = self.conn.execute(sel).scalar()
+
+        self.assertEquals(11, val)
+        
+        # and 4 more
+        self.user_handler.increase_bought_qty(4, 1)
+        sel = select([bought_products.c.quantity]).where(bought_products.c.bought_id == 1)
+        val = self.conn.execute(sel).scalar()
+
+        self.assertEquals(15, val)
 
 
+        self.user_handler.increase_bought_qty(2, 4)
+        sel = select([bought_products.c.quantity]).where(bought_products.c.bought_id == 4)
+        val = self.conn.execute(sel).scalar()
+
+        self.assertEquals(13, val)
 
 
-
+        sel = select([func.count(distinct(bought_products.c.product_id))])
+        print self.conn.execute(sel).fetchall()
 
 
 
