@@ -90,7 +90,7 @@ class TestDBUtilities(unittest.TestCase):
             email = "test@test.com"
         )
 
-        self.user_handler.save_user(data, USER_FIELDS)
+        self.user_handler.save_user(data)
         sel = select([users]).where(users.c.username == u"test_user")
         added_user = self.conn.execute(sel).fetchone()
         self.assertTrue(added_user)
@@ -109,7 +109,7 @@ class TestDBUtilities(unittest.TestCase):
             password = "testpassword",
         )
 
-        self.assertRaises(lambda: self.user_handler.save_user(data, USER_FIELDS))
+        self.assertRaises(lambda: self.user_handler.save_user(data))
 
         #test adding with too many fields doesnt raise an error
         data = dict(
@@ -119,7 +119,7 @@ class TestDBUtilities(unittest.TestCase):
             email = "test@test2.com",
             some_crappy_fields = "crapcrapcrap"
         )
-        self.user_handler.save_user(data, USER_FIELDS)
+        self.user_handler.save_user(data)
         sel = select([exists().where(users.c.username == u"test_user2")])
         added_user = self.conn.execute(sel).scalar()
         self.assertTrue(added_user)
@@ -270,8 +270,76 @@ class TestProductsDB(unittest.TestCase):
         self.assertEquals(13, val)
 
 
-        sel = select([func.count(distinct(bought_products.c.product_id))])
-        print self.conn.execute(sel).fetchall()
+    def test_creating_new_bought_item(self):
+        
+        new_uuid = str(uuid.uuid4())
+        new_product = products.insert().values(product_uuid = new_uuid, product_name = u"hantle", product_desc = u"test" )
+        self.conn.execute(new_product)
+
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+
+        # Konrad buys 10 hantle items
+        self.user_handler.create_bought_product(10, self.uuid3, new_uuid )
+
+        sel = select([products]).select_from(products.join(bought_products).join(users)).group_by(bought_products.c.product_id)
+        konrad_items = self.conn.execute(sel).fetchall()
+        self.assertEquals(4, len(konrad_items))
+        self.assertEquals(u"hantle", konrad_items[len(konrad_items) - 1][2])
+
+        # test for nonexistent user
+
+        empty = self.user_handler.create_bought_product(20, str(uuid.uuid4()), new_uuid)
+
+        self.assertFalse(empty)
+
+        # test for nonexistent item
+
+        empty = self.user_handler.create_bought_product(20, self.uuid1, str(uuid.uuid4()))
+        self.assertFalse(empty)
+
+
+    def test_adding_bought_product_function(self):
+
+        new_uuid = str(uuid.uuid4())
+        new_product = products.insert().values(product_uuid = new_uuid, product_name = u"hantle", product_desc = u"test" )
+        self.conn.execute(new_product)
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        
+
+        #test adding new item
+
+        self.user_handler.add_bought_product(10, self.uuid1, new_uuid)
+        sel = select([products]).select_from(products.join(bought_products).join(users)).group_by(bought_products.c.product_id)
+        konrad_items = self.conn.execute(sel).fetchall()
+        self.assertEquals(4, len(konrad_items))
+        self.assertEquals(u"hantle", konrad_items[len(konrad_items) - 1][2])
+
+        bought_id = self.user_handler.check_user_bought_product(self.uuid1, new_uuid)
+        self.assertTrue(bought_id)
+
+        bought_quantity = select([bought_products.c.quantity]).where(bought_products.c.bought_id == bought_id)
+        q = self.conn.execute(bought_quantity).scalar()
+        self.assertEquals(q, 10)
+
+
+        # test increasing quantity of item already on the list
+
+
+        self.user_handler.add_bought_product(2, self.uuid1, new_uuid)
+
+
+        bought_id = self.user_handler.check_user_bought_product(self.uuid1, new_uuid)
+        self.assertTrue(bought_id)
+
+        sel = select([products]).select_from(products.join(bought_products).join(users)).group_by(bought_products.c.product_id)
+        konrad_items = self.conn.execute(sel).fetchall()
+        self.assertEquals(4, len(konrad_items))
+        bought_quantity = select([bought_products.c.quantity]).where(bought_products.c.bought_id == bought_id)
+        q = self.conn.execute(bought_quantity).scalar()
+        self.assertEquals(q, 12)
+
 
 
 
