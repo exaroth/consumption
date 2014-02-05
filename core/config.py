@@ -10,3 +10,6 @@ DATABASE_PATH = "sqlite:///" + ROOT_PATH + "/test.db"
 USER_FIELDS = ("uuid", "username", "password", "email")
 CUSTOM_USER_FIELDS = ("password", "email" )
 
+PRODUCT_FIELDS = ("uuid", "name", "desc" )
+CUSTOM_PRODUCT_FIELDS = ("name", "desc")
+

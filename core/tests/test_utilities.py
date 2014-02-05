@@ -2,12 +2,12 @@ import unittest
 import os, sys
 
 sys.path.append("..")
-from db_base import BaseDBHandler, UserDatabaseHandler
+from db_base import BaseDBHandler, UserDatabaseHandler, ProductDatabaseHandler
 from config import *
 
-from models import users, products, metadata
+from models import users, products, metadata, bought_products
 from sqlalchemy import create_engine
-from sqlalchemy.sql import select
+from sqlalchemy.sql import select, exists
 import uuid
 
 
@@ -70,7 +70,7 @@ class TestDBUtilities(unittest.TestCase):
 
         self.assertTrue(self.user_handler.user_exists(self.uuid1))
         self.assertFalse(self.user_handler.user_exists(str(uuid.uuid4())))
-        
+
         #test unique username or password
         self.assertFalse(self.user_handler.credentials_unique(u"konrad", "test@test.com"))
         self.assertTrue(self.user_handler.credentials_unique(u"konrad2", "test@test.com"))
@@ -86,7 +86,7 @@ class TestDBUtilities(unittest.TestCase):
             username = u"test_user",
             password = "testpassword",
             email = "test@test.com"
-                   )
+        )
 
         self.user_handler.save_user(data, USER_FIELDS)
         sel = select([users]).where(users.c.username == u"test_user")
@@ -99,6 +99,151 @@ class TestDBUtilities(unittest.TestCase):
 
         #TODO think about replacing generic uuid with user_uuid in user_fields
         #TODO also implement validators to be called before insert
+
+        #test adding with not enough fields
+
+        data = dict(
+            uuid = str(uuid.uuid4()),
+            password = "testpassword",
+        )
+
+        self.assertRaises(lambda: self.user_handler.save_user(data, USER_FIELDS))
+
+        #test adding with too many fields doesnt raise an error
+        data = dict(
+            uuid = str(uuid.uuid4()),
+            username = u"test_user2",
+            password = "testpassword",
+            email = "test@test2.com",
+            some_crappy_fields = "crapcrapcrap"
+        )
+        self.user_handler.save_user(data, USER_FIELDS)
+        sel = select([exists().where(users.c.username == u"test_user2")])
+        added_user = self.conn.execute(sel).scalar()
+        self.assertTrue(added_user)
+
+    def test_getting_single_user_info(self):
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        single_user = self.user_handler.get_user(self.uuid1)
+        self.assertEquals(dict, type(single_user))
+        self.assertIn("username", single_user.keys())
+        self.assertNotIn("id", single_user.keys())
+        self.assertEquals(u"konrad", single_user["username"])
+        nonexistent = self.user_handler.get_user(str(uuid.uuid4()))
+        self.assertEquals(dict, type(nonexistent))
+        self.assertEquals(0, len(nonexistent))
+
+    def test_updating_user_data(self):
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+
+        update_data = dict(
+            email = "zmieniony@gmail.com",
+            username = "tosieniezmieni",
+            password = "zmieniony"
+        )
+
+        self.user_handler.update_user(self.uuid1, update_data)
+
+        sel = select([users]).where(users.c.user_id == 1)
+        updated_user = list(self.conn.execute(sel))[0]
+        self.assertEquals(u"konrad", updated_user[2])
+        self.assertEquals("zmieniony", updated_user[3])
+        self.assertEquals("zmieniony@gmail.com", updated_user[4])
+
+
+class TestProductsDB(unittest.TestCase):
+    def setUp(self):
+
+        engine = create_engine("sqlite:///:memory:")
+        metadata.bind = engine
+        metadata.create_all()
+        self.conn = engine.connect()
+        self.db_handler = BaseDBHandler()
+        self.uuid1 = str(uuid.uuid4())
+        test_user = users.insert().values(user_uuid = self.uuid1, username = u"konrad", password = "deprofundis", email = "depro@depro.com")
+        self.conn.execute(test_user)
+        self.uuid2 = str(uuid.uuid4())
+        test_user2 = users.insert().values(user_uuid = self.uuid2, username = u"malgosia", password = "malgosia", email = "malgosia@gmail.com")
+        self.conn.execute(test_user2)
+        self.uuid3 = str(uuid.uuid4())
+        test_user3 = users.insert().values(user_uuid = self.uuid3, username = u"kuba", password = "kuba", email = "kuba@gmail.com")
+        self.conn.execute(test_user3)
+
+        self.product_uuid1 = str(uuid.uuid4())
+        self.product_uuid2 = str(uuid.uuid4())
+        self.product_uuid3 = str(uuid.uuid4())
+
+        product_1 = products.insert().values(product_uuid = self.product_uuid1, product_name = u"wiertarka", product_desc = u"test" )
+        self.conn.execute(product_1)
+        product_2 = products.insert().values(product_uuid = self.product_uuid2, product_name = u"suszarka", product_desc = u"test" )
+        self.conn.execute(product_2)
+        product_3 = products.insert().values(product_uuid = self.product_uuid3, product_name = u"pralka", product_desc = u"test" )
+        self.conn.execute(product_3)
+
+        buyout1 = bought_products.insert().values(quantity = 10, user_id = 1, product_id = 1)
+        self.conn.execute(buyout1)
+        buyout2 = bought_products.insert().values(quantity = 5, user_id = 1, product_id = 2)
+        self.conn.execute(buyout2)
+        buyout3 = bought_products.insert().values(quantity = 1, user_id = 1, product_id = 3)
+        self.conn.execute(buyout3)
+
+
+        buyout4 = bought_products.insert().values(quantity = 11, user_id = 2, product_id = 1)
+        self.conn.execute(buyout4)
+        buyout5 = bought_products.insert().values(quantity = 1, user_id = 2, product_id = 2)
+        self.conn.execute(buyout5)
+        buyout6 = bought_products.insert().values(quantity = 2, user_id = 3, product_id = 1)
+        self.conn.execute(buyout6)
+
+    def tearDown(self):
+        metadata.drop_all()
+
+    def test_getting_all_user_products(self):
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        
+
+        konrad_products = self.user_handler.get_user_products(str(self.uuid1))
+        self.assertEquals(3, len(konrad_products))
+        self.assertEquals(10, konrad_products[0][len(konrad_products[0]) - 1])
+        bought_fields = PRODUCT_FIELDS + ("quantity", )
+
+        parsed_input = self.user_handler.parse_list_query_data(konrad_products, bought_fields)
+
+        self.assertIn(self.product_uuid1, parsed_input)
+        self.assertEquals(parsed_input[self.product_uuid1]["name"], u"wiertarka")
+        malgosia_products = self.user_handler.get_user_products(self.uuid2)
+        self.assertEquals(2, len(malgosia_products))
+
+        parsed_malgosia = self.user_handler.parse_list_query_data(malgosia_products, bought_fields)
+        self.assertNotIn(self.product_uuid3, parsed_malgosia)
+        self.assertEquals(11, parsed_malgosia[self.product_uuid1]["quantity"])
+
+
+        # sel = select([bought_products]) res = self.conn.execute(sel).fetchall() print res
+
+    def test_checking_if_user_has_bought_product(self):
+
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+
+        self.assertTrue(self.user_handler.check_user_bought_product(self.uuid1, self.product_uuid1))
+        self.assertFalse(self.user_handler.check_user_bought_product(self.uuid2, self.product_uuid3))
+
+        self.assertFalse(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid2))
+        self.assertFalse(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid3))
+        self.assertTrue(self.user_handler.check_user_bought_product(self.uuid3, self.product_uuid1))
+
+        self.assertFalse(self.user_handler.check_user_bought_product(str(uuid.uuid4()), self.product_uuid1))
+        self.assertFalse(self.user_handler.check_user_bought_product(self.uuid1, str(uuid.uuid4())))
+
+
+
+
+
+
 
 
 
