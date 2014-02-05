@@ -1,7 +1,7 @@
 '''
 File: db_base.py
 Author: Konrad Wasowicz
-Description: BaseDBHandler --- implements basic database interaction methods
+Description: Basic Database interaction functions
 '''
 
 import logging
@@ -9,9 +9,11 @@ from config import *
 from models import users, bought_products, products, engine
 from sqlalchemy.sql import select, exists
 from sqlalchemy.sql import and_, or_, not_
-from sqlalchemy import desc
+from sqlalchemy import desc, func
+from sqlalchemy.exc import IntegrityError
 
 logging.basicConfig(filename = ROOT_PATH + "/errors.log", level = logging.DEBUG)
+import uuid
 
 class BaseDBHandler(object):
 
@@ -38,7 +40,7 @@ class BaseDBHandler(object):
             return dict()
         return dict(zip(iter, query[1:]))
 
-    def parse_list_query_data(self, data, iter):
+    def parse_list_query_data(self, data, iter, key = "uuid"):
         """
         Parses list of tuples returned from db by sqlalchemy,
         Returns dictionary containing:
@@ -46,13 +48,14 @@ class BaseDBHandler(object):
         
         Keyword Arguments:
         data -- tuple containing tuples :) returned from db (list/tuple),
-        iter -- iterable containg field names for given table (minus pk)
+        iter -- iterable containg field names for given table (minus pk),
+        key -- field to be used as key for each entry, defaults to uuid (str)
 
         """
         result = dict()
         for row in data:
             temp = self.parse_query_data(row, iter)
-            result[temp["uuid"]] = temp
+            result[temp[key]] = temp
         return result
 
     def generate_unique_uuid(self, field_name):
@@ -65,11 +68,11 @@ class BaseDBHandler(object):
         to compare to, eg. users.c.user_uuid (sqlalchemy column name)
         """
         while True:
-            uuid = str(uuid.uuid4())
-            sel = select([exists().where(field_name == uuid)])
+            sample_uuid = str(uuid.uuid4())
+            sel = select([exists().where(field_name == sample_uuid)])
             result = self.conn.execute(sel).scalar()
             if result == 0:
-                return uuid
+                return sample_uuid
     
     def get_row(self, column, uuid, field_tuple):
         """
@@ -125,6 +128,7 @@ class BaseDBHandler(object):
         self.conn.execute(delete_q)
 
 
+
 class UserDatabaseHandler(BaseDBHandler):
 
     """
@@ -141,11 +145,18 @@ class UserDatabaseHandler(BaseDBHandler):
         else:
             self.conn = self.application.conn
 
-    def user_exists(self, uuid):
+    # not needed
+    # def user_exists(self, uuid):
+    #     """
+    #     Checks if user with given uuid exists 
+    #     """
+    #     return self.check_exists(users.c.user_uuid, uuid)
+
+    def generate_user_uuid(self):
         """
-        Checks if user with given uuid exists 
+        Generate user uuid 
         """
-        return self.check_exists(users.c.user_uuid, uuid)
+        return self.generate_unique_uuid(users.c.user_uuid)
 
     def credentials_unique(self, username, email):
         """
@@ -155,6 +166,8 @@ class UserDatabaseHandler(BaseDBHandler):
         username, email -- (str)
         Returns : bool
         """
+        if not username or not email:
+            raise TypeError("no username or email given")
         sel = select([exists().where(
                 or_(
                     users.c.username == username,
@@ -167,6 +180,8 @@ class UserDatabaseHandler(BaseDBHandler):
     def save_user(self, data):
        """
        Create new user with given data
+
+       Returns : primary key of the user that has been created
        
        Keyword Arguments:
        data -- dictionary containing user field names,
@@ -183,7 +198,34 @@ class UserDatabaseHandler(BaseDBHandler):
        els_to_insert["user_uuid"] = els_to_insert["uuid"] # i screwed up :(
        del els_to_insert["uuid"]
        ins = users.insert().values(**els_to_insert)
-       self.conn.execute(ins)
+       res = self.conn.execute(ins)
+       return res.inserted_primary_key[0]
+
+    def create_user(self, data):
+        """
+        Wrapper for creating new user
+        -Generates unique uuid
+        -Checks if name and email are unique
+        -Saves user to database
+        see save_user, credentials_unique, generate_user_uuid for details
+        
+        Returns: inserted user pk or raises IntegrityError if name or email is taken
+        
+        Keyword Arguments:
+        data -- dictionary containing values to be inserted,
+        should be parsed and validated (dict)
+        """
+
+        if not self.credentials_unique(data["username"], data["email"]):
+            raise IntegrityError("Name and email must be unique")
+        user_uuid = self.generate_user_uuid()
+        data["uuid"] = user_uuid
+        try:
+            res = self.save_user(data)
+            return res
+        except Exception as e:
+            raise
+
 
     def get_user(self, uuid):
         """
@@ -237,7 +279,7 @@ class UserDatabaseHandler(BaseDBHandler):
         Return tuple containing list of all items bought by user 
 
         Keyword Arguments:
-        uuid -- user uniquye uuid (str)
+        uuid -- user unique uuid (str)
         
         """
 
@@ -299,6 +341,8 @@ class UserDatabaseHandler(BaseDBHandler):
         """
         Create new bought item given product_uuid and user_uuid 
         of product or user with given uuid doesnt exists returns None
+
+        ReturnsL primary_key that has been inserted
         
         Keyword Arguments:
         qty -- amount of items bought (int),
@@ -310,7 +354,8 @@ class UserDatabaseHandler(BaseDBHandler):
         product_id = self.conn.execute(select([products.c.product_id]).where(products.c.product_uuid == product_uuid)).scalar()
         if product_id and user_id:
             ins = bought_products.insert().values(quantity = qty, user_id = user_id, product_id = product_id)
-            self.conn.execute(ins)
+            res = self.conn.execute(ins)
+            return res.inserted_primary_key[0]
         else:
             return
 
@@ -364,16 +409,30 @@ class ProductDatabaseHandler(BaseDBHandler):
         """
         return self.generate_unique_uuid(products.c.product_uuid)
 
+    # not needed
+    # def product_exists(self, uuid):
+    #     """
+    #     Checks if product with given uuid exists in db 
+    #     """
+    #     return self.check_exists(products.c.product_uuid, uuid)
 
-    def product_exists(self, uuid):
+    def product_unique(self, name):
         """
-        Checks if product with given uuid exists in db 
+        Check if product with given name exists in database 
         """
-        return self.check_exists(products.c.product_uuid, uuid)
+        if not name:
+            raise Exception("No product_name given")
+
+        sel = select([exists().where(products.c.product_name == name)])
+        return not self.conn.execute(sel).scalar()
+
+
 
     def save_product(self, data):
        """
        Create new product with given data
+
+       Returns: primary key of the product that has been inserted
        
        Keyword Arguments:
        data -- dictionary containing product field names,
@@ -389,14 +448,41 @@ class ProductDatabaseHandler(BaseDBHandler):
                raise Exception("Data not parsed properly, missing {0}".format(field))
        els_to_insert["product_uuid"] = els_to_insert["uuid"]
        del els_to_insert["uuid"]
-       self.conn.execute(products.insert().values(**els_to_insert))
+       res = self.conn.execute(products.insert().values(**els_to_insert))
+       return res.inserted_primary_key[0]
+
+    def create_product(self, data):
+       """
+       Wrapper for creating product
+       It:
+       -Checks if name is unique
+       -Generates unique uuid
+       -Saves data to database
+       Returns: inserted items pk
+       
+       Keyword Arguments:
+       data -- dictionary containing data to be inserted into database,
+       must match fields defined in PRODUCT_FIELDS tuple in config.py
+       (minus pk and uuid) (dict)
+       See save_product, product_unique and generate_product_uuid 
+       for more info
+       """
+       unique = self.product_unique(data["product_name"])
+       if not unique:
+           raise IntegrityError("Product name must be unique", data["product_name"], "create_product")
+       product_uuid = self.generate_product_uuid()
+       data["uuid"] = product_uuid
+       try:
+           res = self.save_product(data)
+           return res
+       except:
+           raise
 
 
     def get_product(self, uuid):
         """
         Get product with given uuid 
         """
-
         return self.get_row(products.c.product_uuid, uuid)
 
 
@@ -426,7 +512,7 @@ class ProductDatabaseHandler(BaseDBHandler):
         self.conn.execute(update_q)
 
 
-    def list_all_products(self, limit, offset):
+    def get_product_list(self, limit, offset):
         """
         Get a dictionary of products returned from db 
         Returns: dict
@@ -442,10 +528,10 @@ class ProductDatabaseHandler(BaseDBHandler):
         Returns list of most selled products
         limit -- (optional) limit the results, defaults to 10
         """
-        sel = select([func.sum(bought_products.c.quantity).label("suma"), products.c.product_name])\
+        sel = select([func.sum(bought_products.c.quantity).label("sum"), products.c.product_name])\
                 .select_from(products.join(bought_products))\
                 .group_by(bought_products.c.product_id)\
-                .order_by(desc("suma")).limit(limit)
+                .order_by(desc("sum")).limit(limit)
 
         top_products = self.conn.execute(sel).fetchall()
 
@@ -474,4 +560,8 @@ class ProductDatabaseHandler(BaseDBHandler):
         """
         del_all = products.delete()
         self.conn.execute(del_all)
+
+    def _get_all_products(self):
+        sel = select([products])
+        return self.parse_list_query_data(self.conn.execute(sel), PRODUCT_FIELDS, "product_name")
 

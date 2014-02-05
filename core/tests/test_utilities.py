@@ -1,5 +1,6 @@
 import unittest
 import os, sys
+import uuid
 
 sys.path.append("..")
 from db_base import BaseDBHandler, UserDatabaseHandler, ProductDatabaseHandler
@@ -8,9 +9,9 @@ from config import *
 from models import users, products, metadata, bought_products
 from sqlalchemy import create_engine
 from sqlalchemy.sql import select, exists
-import uuid
 
 from sqlalchemy import distinct, func
+from sqlalchemy.exc import IntegrityError
 
 
 
@@ -68,10 +69,11 @@ class TestDBUtilities(unittest.TestCase):
 
         self.user_handler = UserDatabaseHandler(conn = self.conn)
 
-        #test unique user uuid
+        # test unique user uuid
+        # removed user_exists (not needed)
 
-        self.assertTrue(self.user_handler.user_exists(self.uuid1))
-        self.assertFalse(self.user_handler.user_exists(str(uuid.uuid4())))
+        # self.assertTrue(self.user_handler.user_exists(self.uuid1))
+        # self.assertFalse(self.user_handler.user_exists(str(uuid.uuid4())))
 
         #test unique username or password
         self.assertFalse(self.user_handler.credentials_unique(u"konrad", "test@test.com"))
@@ -154,8 +156,174 @@ class TestDBUtilities(unittest.TestCase):
         self.assertEquals("zmieniony", updated_user[3])
         self.assertEquals("zmieniony@gmail.com", updated_user[4])
 
-
 class TestProductsDB(unittest.TestCase):
+
+    def setUp(self):
+        engine = create_engine("sqlite:///:memory:")
+        metadata.bind = engine
+        metadata.create_all()
+        self.conn = engine.connect()
+        self.product_handler = ProductDatabaseHandler(self.conn)
+
+    def tearDown(self):
+        metadata.drop_all()
+
+
+    def test_saving_a_product(self):
+
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt" )
+
+        inserted_id = self.product_handler.save_product(data)
+        self.assertEquals(1, inserted_id)
+        sel = select([products])
+        prod = self.conn.execute(sel).fetchone()
+        self.assertTrue(prod)
+        self.assertEquals(prod[2], u"nowy")
+        self.assertEquals(prod[3], u"nowy produkt")
+
+        pr_uuid = str(uuid.uuid4())
+
+        data = dict(uuid = pr_uuid, product_name = u"nowy2", product_desc = u"drugi nowy produkt" )
+        inserted_id = self.product_handler.save_product(data)
+        self.assertEquals(2, inserted_id)
+
+        sel = select([products])
+        product_list = self.conn.execute(sel).fetchall()
+        self.assertEquals(2, len(product_list))
+        sec = product_list[1]
+        self.assertEquals(u"nowy2", sec[2])
+        self.assertEquals(u"drugi nowy produkt", sec[3])
+
+        # test wrong data
+
+        # missing fields
+
+        data = dict(product_name = u"nowy3", product_desc = u"trzeci")
+        self.assertRaises(lambda: self.product_handler.save_product(data))
+
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy4")
+        self.assertRaises(lambda: self.product_handler.save_product(data))
+        # not unique
+
+
+
+        # TODO integrity error not risen, even though it says so
+        data = dict(uuid = pr_uuid, product_name = u"nowy5", product_desc = u"random")
+        self.assertRaises(self.product_handler.save_product(data))
+        sel = select([products])
+        # print self.conn.execute(sel).fetchall()
+                
+        # TODO unique contraint not working natively (probably because of sqlite)
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"t")
+        self.product_handler.save_product(data)
+    def test_checking_if_product_unique(self):
+
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt" )
+        self.product_handler.save_product(data)
+
+        self.assertFalse(self.product_handler.product_unique(u"nowy"))
+        # self.assertFalse(self.product_handler.product_unique("nowy")) # checking if works for ascii too
+        self.assertTrue(self.product_handler.product_unique(u"nowy_2"))
+
+    def test_create_product_wrapper(self):
+        data = dict(product_name = u"inserted", product_desc = u"sample")
+        product_id = self.product_handler.create_product(data)
+        self.assertEquals(1, product_id)
+        sel = select([products])
+        res = self.conn.execute(sel).fetchall()
+        self.assertEquals(1, len(res))
+        new_product = res[0]
+        self.assertEquals(u"inserted", new_product[2])
+
+        data = dict(product_name = u"inserted2", product_desc = u"sample")
+        product_id2 = lambda: self.product_handler.create_product(data)
+        self.assertEquals(product_id2(), 2)
+        sel = select([products])
+        res = tuple(self.conn.execute(sel)) # wrapper used to prevent locking the table
+
+        self.assertEquals(2, len(res))
+        new_product2 = res[1]
+
+        self.assertEquals(u"inserted2", new_product2[2])
+
+        # test wrong data insertions
+
+        data = dict(product_name = u"inserted", product_desc = u"x")
+        self.assertRaises(lambda : self.product_handler.create_product(data))
+        sel = select([products])
+        res = tuple(self.conn.execute(sel)) # wrapper used to prevent locking the table
+
+        self.assertEquals(2, len(res))
+
+        # test with too many arguments
+
+        data = dict(product_name = u"deprofundis", product_desc = u"error", random_arg = 10)
+        ins = self.product_handler.create_product(data)
+        self.assertEquals(3, ins)
+
+        res = self.product_handler._get_all_products()
+        self.assertEquals(3, len(res))
+        self.assertIn(u"deprofundis", res)
+        self.assertEquals(res["deprofundis"]["product_desc"], u"error")
+        self.assertNotIn("random_arg", res["deprofundis"].keys())
+
+    def test_getting_top_products(self):
+
+        data = dict(product_name = u"wiertarka", product_desc = u"test")
+        p1 = self.product_handler.create_product(data)
+
+        data = dict(product_name = u"suszarka", product_desc = u"test")
+        p2 = self.product_handler.create_product(data)
+        
+
+        data = dict(product_name = u"miotla", product_desc = u"test")
+        p3 = self.product_handler.create_product(data)
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+
+        data = dict(username = u"konrad", password = "test", email = "konrad@gmail.com")
+        u1 = self.user_handler.create_user(data)
+
+        data = dict(username = u"malgosia", password = "test", email = "malgosia@gmail.com")
+        u2 = self.user_handler.create_user(data)
+
+        data = dict(username = u"kuba", password = "test", email = "kuba@gmail.com")
+        u3 = self.user_handler.create_user(data)
+
+        sel = select([users.c.user_uuid]).where(users.c.user_id == u1)
+        user1 = self.conn.execute(sel).scalar()
+
+        sel = select([users.c.user_uuid]).where(users.c.user_id == u2)
+        user2 = self.conn.execute(sel).scalar()
+
+        sel = select([users.c.user_uuid]).where(users.c.user_id == u3)
+        user3 = self.conn.execute(sel).scalar()
+
+        sel = select([products.c.product_uuid]).where(products.c.product_id == p1)
+        pr1 = self.conn.execute(sel).scalar()
+
+        sel = select([products.c.product_uuid]).where(products.c.product_id == p2)
+        pr2 = self.conn.execute(sel).scalar()
+
+        sel = select([products.c.product_uuid]).where(products.c.product_id == p3)
+        pr3 = self.conn.execute(sel).scalar()
+
+        self.user_handler.add_bought_product(10, user1, pr1)
+        self.user_handler.add_bought_product(12, user1, pr2)
+        self.user_handler.add_bought_product(18, user1, pr3)
+        self.user_handler.add_bought_product(2, user2, pr1)
+        self.user_handler.add_bought_product(18, user2, pr2)
+        self.user_handler.add_bought_product(1, user2, pr3)
+        self.user_handler.add_bought_product(2, user3, pr1)
+        self.user_handler.add_bought_product(5, user3, pr2)
+        self.user_handler.add_bought_product(9, user3, pr3)
+
+        #TODO
+
+
+
+class TestBoughtProductsDB(unittest.TestCase):
+
     def setUp(self):
 
         engine = create_engine("sqlite:///:memory:")
@@ -215,7 +383,7 @@ class TestProductsDB(unittest.TestCase):
         parsed_input = self.user_handler.parse_list_query_data(konrad_products, bought_fields)
 
         self.assertIn(self.product_uuid1, parsed_input)
-        self.assertEquals(parsed_input[self.product_uuid1]["name"], u"wiertarka")
+        self.assertEquals(parsed_input[self.product_uuid1]["product_name"], u"wiertarka")
         malgosia_products = self.user_handler.get_user_products(self.uuid2)
         self.assertEquals(2, len(malgosia_products))
 
@@ -224,7 +392,6 @@ class TestProductsDB(unittest.TestCase):
         self.assertEquals(11, parsed_malgosia[self.product_uuid1]["quantity"])
 
 
-        # sel = select([bought_products]) res = self.conn.execute(sel).fetchall() print res
 
     def test_checking_if_user_has_bought_product(self):
 
