@@ -81,6 +81,20 @@ class TestDBUtilities(unittest.TestCase):
         self.assertFalse(self.user_handler.credentials_unique(u"konrad2", "depro@depro.com"))
         self.assertFalse(self.user_handler.credentials_unique(u"konrad", "depro@depro.com"))
 
+    def test_counting_users(self):
+
+        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        data = dict(username = u"first", email = "first@depro.com", password = "random" )
+        self.user_handler.create_user(data)
+
+        data = dict(username = u"second", email = "second@depro.com", password = "random" )
+        self.user_handler.create_user(data)
+
+        data = dict(username = u"third", email = "third@depro.com", password = "random" )
+        self.user_handler.create_user(data)
+
+        self.assertEquals(5, self.user_handler.get_number_of_users())
+
     def test_adding_user(self):
 
         self.user_handler = UserDatabaseHandler(conn = self.conn)

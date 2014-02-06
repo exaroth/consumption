@@ -137,17 +137,13 @@ class UserDatabaseHandler(BaseDBHandler):
 
     """
     Base class for user database interaction
-    accepts connection object as argument
-    defaults to self.application.conn
+    accepts connection object as argument (optionally)
     """
 
         
     def __init__(self, conn = None):
         if conn:
             self.conn = conn
-
-        else:
-            self.conn = self.application.conn
 
     # not needed
     # def user_exists(self, uuid):
@@ -276,6 +272,14 @@ class UserDatabaseHandler(BaseDBHandler):
 
         return self.get_all_rows(users, USER_FIELDS, limit, offset)
 
+    def get_number_of_users(self):
+        """
+        Get number of users in database 
+        """
+
+        sel = select([func.count(users.c.user_id)])
+        return self.conn.execute(sel).scalar()
+
 
     def get_user_products(self, uuid):
 
@@ -403,9 +407,6 @@ class ProductDatabaseHandler(BaseDBHandler):
     def __init__(self, conn = None):
         if conn:
             self.conn = conn
-
-        else:
-            self.conn = self.application.conn
 
     def generate_product_uuid(self):
         """
