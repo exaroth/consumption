@@ -23,7 +23,7 @@ class BaseDBHandler(object):
     """
 
 
-    def parse_query_data(self, query, iter):
+    def parse_query_data(self, query, iter, id = False):
         """
         Parses tuple returned from database by sqlalchemy,  
         second argument is iterable list or tuple containing database
@@ -33,14 +33,18 @@ class BaseDBHandler(object):
         query -- tuple with data returned from db (tuple/list),
         iter -- iterable containing field names used for parsing database
         info (list/tuple)
+        id -- if set to False it will not include first item in tuple which usually is
+        a an id
         """
         if type(iter) not in (tuple, list):
             raise TypeError("iter must be iterable type : list or tuple")
         if not query:
             return dict()
+        if id:
+            return dict(zip(iter, query))
         return dict(zip(iter, query[1:]))
 
-    def parse_list_query_data(self, data, iter, key = "uuid"):
+    def parse_list_query_data(self, data, iter, key = "uuid", id = False):
         """
         Parses list of tuples returned from db by sqlalchemy,
         Returns dictionary containing:
@@ -54,7 +58,7 @@ class BaseDBHandler(object):
         """
         result = dict()
         for row in data:
-            temp = self.parse_query_data(row, iter)
+            temp = self.parse_query_data(row, iter, id)
             result[temp[key]] = temp
         return result
 
@@ -528,17 +532,18 @@ class ProductDatabaseHandler(BaseDBHandler):
         Returns list of most selled products
         limit -- (optional) limit the results, defaults to 10
         """
-        sel = select([func.sum(bought_products.c.quantity).label("sum"), products.c.product_name])\
+        sel = select([products.c.product_name, products.c.product_uuid, func.sum(bought_products.c.quantity).label("sum")])\
                 .select_from(products.join(bought_products))\
                 .group_by(bought_products.c.product_id)\
                 .order_by(desc("sum")).limit(limit)
 
         top_products = self.conn.execute(sel).fetchall()
 
-        result = dict()
-        for product_item in top_products:
-            result[product_item[1]] = product_item[0]
-        return result
+        # result = dict()
+        # for product_item in top_products:
+        #     result[product_item[1]] = product_item[0]
+        # return result
+        return self.parse_list_query_data(top_products, ("product_name", "product_uuid", "quantity"), "product_name", True)
 
     def get_all_sold_products(self, limit = None):
 
