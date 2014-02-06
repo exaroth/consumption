@@ -11,7 +11,7 @@ def generate_password_hash(password):
 
     return hashlib.sha1(password + "," + SECRET_KEY).hexdigest()
 
-def verify_password(password, signature):
+def check_password_hash(password, signature):
     """
     Verifies that hash matches password 
     """

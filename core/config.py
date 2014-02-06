@@ -16,3 +16,5 @@ CUSTOM_PRODUCT_FIELDS = ("name", "desc")
 
 SECRET_KEY = "super-secret"
 
+DEBUG = True
+

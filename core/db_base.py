@@ -2,6 +2,7 @@
 File: db_base.py
 Author: Konrad Wasowicz
 Description: Basic Database interaction functions
+TODO -- Implement db logging hanfling
 '''
 
 import logging
@@ -174,8 +175,11 @@ class UserDatabaseHandler(BaseDBHandler):
                     users.c.email == email
                 )
         )])
-        result = self.conn.execute(sel).scalar()
-        return not result
+        try:
+            result = self.conn.execute(sel).scalar()
+            return not result
+        except:
+            raise
 
     def save_user(self, data):
        """
@@ -198,8 +202,15 @@ class UserDatabaseHandler(BaseDBHandler):
        els_to_insert["user_uuid"] = els_to_insert["uuid"] # i screwed up :(
        del els_to_insert["uuid"]
        ins = users.insert().values(**els_to_insert)
-       res = self.conn.execute(ins)
-       return res.inserted_primary_key[0]
+       trans = self.conn.begin()
+       try:
+           res = self.conn.execute(ins)
+           trans.commit()
+           return res.inserted_primary_key[0]
+       except:
+           trans.rollback()
+           logging.error("Error creating user")
+           raise
 
     def create_user(self, data):
         """
@@ -216,14 +227,16 @@ class UserDatabaseHandler(BaseDBHandler):
         should be parsed and validated (dict)
         """
 
-        if not self.credentials_unique(data["username"], data["email"]):
-            raise IntegrityError("Name and email must be unique")
+        # put unique check in view model
+
+        # if not self.credentials_unique(data["username"], data["email"]):
+        #     raise IntegrityError("Name and email must be unique")
         user_uuid = self.generate_user_uuid()
         data["uuid"] = user_uuid
         try:
             res = self.save_user(data)
             return res
-        except Exception as e:
+        except:
             raise
 
 
@@ -234,7 +247,10 @@ class UserDatabaseHandler(BaseDBHandler):
         Keyword Arguments:
         uuid -- unique user uuid
         """
-        return self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
+        try:
+            return self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
+        except:
+            raise
 
     def delete_user(self, uuid):
         """
@@ -243,7 +259,14 @@ class UserDatabaseHandler(BaseDBHandler):
         Keyword Arguments:
         uuid -- unique users uuid
         """
-        self.delete_row(users.c.uuid, uuid)
+        trans = self.conn.begin()
+        try:
+            self.delete_row(users.c.uuid, uuid)
+            trans.commit()
+        except:
+            trans.rollback()
+            logging.error("Error deleting user")
+            raise
 
     def update_user(self, uuid, data):
         """
@@ -260,7 +283,13 @@ class UserDatabaseHandler(BaseDBHandler):
         update_q = users.update()\
                 .where(users.c.user_uuid == uuid)\
                 .values(**items_to_update)
-        self.conn.execute(update_q)
+        trans = self.conn.begin()
+        try:
+            self.conn.execute(update_q)
+            trans.commit()
+        except:
+            trans.rollback()
+            raise
 
     def list_all_users(self, limit, offset):
 
@@ -269,8 +298,10 @@ class UserDatabaseHandler(BaseDBHandler):
         limit -- limit amount of rows returned (int),
         offset -- offset for a query (int)
         """
-
-        return self.get_all_rows(users, USER_FIELDS, limit, offset)
+        try:
+            return self.get_all_rows(users, USER_FIELDS, limit, offset)
+        except:
+            raise
 
     def get_number_of_users(self):
         """
@@ -278,7 +309,10 @@ class UserDatabaseHandler(BaseDBHandler):
         """
 
         sel = select([func.count(users.c.user_id)])
-        return self.conn.execute(sel).scalar()
+        try:
+            return self.conn.execute(sel).scalar()
+        except:
+            raise
 
 
     def get_user_products(self, uuid):
@@ -299,8 +333,10 @@ class UserDatabaseHandler(BaseDBHandler):
                 .select_from(products.join(bought_products))\
                 .where(bought_products.c.user_id == user_id)\
                 .order_by(desc(bought_products.c.quantity))
-
-        return self.conn.execute(user_products).fetchall()
+        try:
+            return self.conn.execute(user_products).fetchall()
+        except:
+            raise
 
     def increase_bought_qty(self, amount, id):
         """
@@ -317,7 +353,14 @@ class UserDatabaseHandler(BaseDBHandler):
         update = bought_products.update()\
                 .where(bought_products.c.bought_id == id)\
                 .values(quantity = (current + amount))
-        self.conn.execute(update)
+        trans = self.conn.begin()
+        try:
+            self.conn.execute(update)
+            trans.commit()
+        except Exceptions as e:
+            logging.error(sys.exc_info()[0])
+            trans.rollback()
+            raise
 
 
     def check_user_bought_product(self, user_uuid, product_uuid):
@@ -341,8 +384,11 @@ class UserDatabaseHandler(BaseDBHandler):
         sel = select([bought_products.c.bought_id]).select_from(products.join(bought_products))\
                 .where(and_(products.c.product_uuid == product_uuid,\
                             bought_products.c.user_id == user[0] ))
-        res = self.conn.execute(sel).scalar()
-        return res
+        try:
+            res = self.conn.execute(sel).scalar()
+            return res
+        except:
+            raise
 
     def create_bought_product(self, qty, user_uuid, product_uuid):
 
@@ -350,20 +396,32 @@ class UserDatabaseHandler(BaseDBHandler):
         Create new bought item given product_uuid and user_uuid 
         of product or user with given uuid doesnt exists returns None
 
-        ReturnsL primary_key that has been inserted
+        Returns primary_key that has been inserted
         
         Keyword Arguments:
         qty -- amount of items bought (int),
         user_uuid -- unique user uuid (str),
         product_uuid -- unique product uuid (str)
         """
-
-        user_id = self.conn.execute(select([users.c.user_id]).where(users.c.user_uuid == user_uuid)).scalar()
-        product_id = self.conn.execute(select([products.c.product_id]).where(products.c.product_uuid == product_uuid)).scalar()
+        try:
+            user_id = self.conn.execute(select([users.c.user_id])\
+                                        .where(users.c.user_uuid == user_uuid)).scalar()
+            product_id = self.conn.execute(select([products.c.product_id])\
+                                       .where(products.c.product_uuid == product_uuid)).scalar()
+        except:
+            raise
         if product_id and user_id:
-            ins = bought_products.insert().values(quantity = qty, user_id = user_id, product_id = product_id)
-            res = self.conn.execute(ins)
-            return res.inserted_primary_key[0]
+            ins = bought_products.insert()\
+                    .values(quantity = qty, user_id = user_id, product_id = product_id)
+            trans = self.conn.begin()
+            try:
+                res = self.conn.execute(ins)
+                trans.commit()
+                return res.inserted_primary_key[0]
+            except Exception as e:
+                trans.rollback()
+                raise
+                logging.error(sys.exc_info[0])
         else:
             return
 
@@ -381,12 +439,20 @@ class UserDatabaseHandler(BaseDBHandler):
         product_uuid -- unique product uuid (str)
 
         """
-       
-        bought = self.check_user_bought_product(user_uuid, product_uuid) # check if user bought item 
+        try:
+            bought = self.check_user_bought_product(user_uuid, product_uuid) # check if user bought item    
+        except:
+            raise
         if bought:
-            self.increase_bought_qty(quantity, bought) # if yes increase quantity
+            try:
+                self.increase_bought_qty(quantity, bought) # if yes increase quantity
+            except:
+                raise
         else:
-            self.create_bought_product(quantity, user_uuid, product_uuid) # else create new record
+            try:
+                self.create_bought_product(quantity, user_uuid, product_uuid) # else create new record
+            except:
+                raise
 
     def _delete_all_users(self):
         """
