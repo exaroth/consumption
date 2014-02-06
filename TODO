@@ -1,0 +1,5 @@
+
+
+* add tests for get_all_bought_products
+* fix cascading in sqlite
+* more products tests

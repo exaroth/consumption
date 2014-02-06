@@ -13,3 +13,6 @@ CUSTOM_USER_FIELDS = ("password", "email" )
 PRODUCT_FIELDS = ("uuid", "product_name", "product_desc" )
 CUSTOM_PRODUCT_FIELDS = ("name", "desc")
 
+
+SECRET_KEY = "super-secret"
+

@@ -51,5 +51,3 @@ def on_connect(conn, record):
 from sqlalchemy import event 
 event.listen(engine, "connect", on_connect)
 
-
-
