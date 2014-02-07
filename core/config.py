@@ -7,7 +7,7 @@ ROOT_PATH = os.path.dirname(BASE_PATH + "..")
 
 DATABASE_PATH = "sqlite:///" + ROOT_PATH + "/test.db"
 
-USER_FIELDS = ("uuid", "username", "password", "email")
+USER_FIELDS = ("uuid", "username", "password", "email", "joined")
 CUSTOM_USER_FIELDS = ("password", "email" )
 
 PRODUCT_FIELDS = ("uuid", "product_name", "product_desc" )

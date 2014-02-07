@@ -1,8 +1,10 @@
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
+
 import tornado.options
 import tornado.web
 from tornado.options import define, options
+
 
 define("port", default = 8000, help = "set server port", type = int)
 
@@ -12,6 +14,7 @@ import os, sys
 import logging
 import uuid
 import simplejson as json
+from datetime import datetime
 
 from config import *
 from models import users, bought_products, products, engine
@@ -128,6 +131,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         if not self.credentials_unique(data["username"], data["email"]):
             self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
         data["password"] = generate_password(data["password"])
+        data["joined"] = datetime.now()
 
         try:
             id = self.create_user(data)

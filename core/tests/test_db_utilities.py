@@ -1,6 +1,7 @@
 import unittest
 import os, sys
 import uuid
+from datetime import datetime
 
 sys.path.append("..")
 from db_base import BaseDBHandler, UserDatabaseHandler, ProductDatabaseHandler
@@ -84,13 +85,13 @@ class TestDBUtilities(unittest.TestCase):
     def test_counting_users(self):
 
         self.user_handler = UserDatabaseHandler(conn = self.conn)
-        data = dict(username = u"first", email = "first@depro.com", password = "random" )
+        data = dict(username = u"first", email = "first@depro.com", password = "random", joined = datetime.now()  )
         self.user_handler.create_user(data)
 
-        data = dict(username = u"second", email = "second@depro.com", password = "random" )
+        data = dict(username = u"second", email = "second@depro.com", password = "random", joined = datetime.now() )
         self.user_handler.create_user(data)
 
-        data = dict(username = u"third", email = "third@depro.com", password = "random" )
+        data = dict(username = u"third", email = "third@depro.com", password = "random", joined = datetime.now() )
         self.user_handler.create_user(data)
 
         self.assertEquals(5, self.user_handler.get_number_of_users())
@@ -103,7 +104,9 @@ class TestDBUtilities(unittest.TestCase):
             uuid = str(uuid.uuid4()),
             username = u"test_user",
             password = "testpassword",
-            email = "test@test.com"
+            email = "test@test.com",
+            joined = datetime.now()
+
         )
 
         self.user_handler.save_user(data)
@@ -133,7 +136,8 @@ class TestDBUtilities(unittest.TestCase):
             username = u"test_user2",
             password = "testpassword",
             email = "test@test2.com",
-            some_crappy_fields = "crapcrapcrap"
+            some_crappy_fields = "crapcrapcrap",
+            joined = datetime.now()
         )
         self.user_handler.save_user(data)
         sel = select([exists().where(users.c.username == u"test_user2")])
@@ -299,13 +303,13 @@ class TestProductsDB(unittest.TestCase):
 
         self.user_handler = UserDatabaseHandler(conn = self.conn)
 
-        data = dict(username = u"konrad", password = "test", email = "konrad@gmail.com")
+        data = dict(username = u"konrad", password = "test", email = "konrad@gmail.com", joined = datetime.now())
         u1 = self.user_handler.create_user(data)
 
-        data = dict(username = u"malgosia", password = "test", email = "malgosia@gmail.com")
+        data = dict(username = u"malgosia", password = "test", email = "malgosia@gmail.com", joined = datetime.now())
         u2 = self.user_handler.create_user(data)
 
-        data = dict(username = u"kuba", password = "test", email = "kuba@gmail.com")
+        data = dict(username = u"kuba", password = "test", email = "kuba@gmail.com", joined = datetime.now())
         u3 = self.user_handler.create_user(data)
 
         sel = select([users.c.user_uuid]).where(users.c.user_id == u1)

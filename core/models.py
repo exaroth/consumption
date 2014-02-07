@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, Unicode, Integer, MetaData, ForeignKey, UniqueConstraint, ForeignKeyConstraint
+from sqlalchemy import Table, Column, String, Unicode, Integer, MetaData, ForeignKey, UniqueConstraint, ForeignKeyConstraint, DateTime
 from config import *
 
 
@@ -14,6 +14,7 @@ users = Table("users", metadata,
               Column("username", Unicode(40), nullable = False),
               Column("password", String(40)),
               Column("email", String(40), nullable = False),
+              Column("joined", DateTime),
               UniqueConstraint("user_uuid", "username", "email")
              )
 
