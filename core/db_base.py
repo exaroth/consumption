@@ -244,14 +244,20 @@ class UserDatabaseHandler(BaseDBHandler):
             raise
 
 
-    def get_user(self, uuid):
+    def get_user(self, uuid, safe = False):
         """
         Get user with given uuid 
         
         Keyword Arguments:
         uuid -- unique user uuid
+        safe -- whether to remove secure fields from query
         """
         try:
+            if safe:
+                res = self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
+                for field in SECURE_USER_FIELDS:
+                    del res[field]
+                return res
             return self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
         except:
             raise

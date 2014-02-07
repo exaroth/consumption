@@ -47,6 +47,7 @@ class Application(tornado.web.Application):
 
     """
     Application class 
+    accepts (mandatory) sqlalchemy connection object in constructor
     """
 
     def __init__(self, conn):
@@ -65,7 +66,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def __init__(self, *args, **kwargs):
         super(BaseHandler, self).__init__(*args, **kwargs)
-        self.conn = engine.connect()
+        self.conn = self.application.conn
 
     def initialize(self):
         pass
@@ -114,7 +115,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
             self.write(json.dumps(result))
             self.finish()
         except Exception as e:
-            self.generic_resp(500, "Server Error", e)
+            self.generic_resp(500, "Server Error", str(e))
             self.finish()
 
     def post(self):
@@ -139,24 +140,30 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         rec = json.loads(self.request.body)
         # Process data  -- remove whitespace
         # Validate data here
-        try:
-            data = rec["user"]
-            if not self.credentials_unique(data["username"], data["email"]):
-                self.write(json.dumps(dict(status = 400, message = "Bad Request", _meta = "Username and password have to be unique")))
-                self.set_status(400)
-                self.finish()
-            else:
+        data = rec["user"]
+        check = True
+        for field in ("username", "email", "password"):
+            if field not in data.keys():
+                self.generic_resp(400, "Bad Request", "Missing fields")
+                return
+        else:
+            try:
+                if not self.credentials_unique(data["username"], data["email"]):
+                    self.generic_resp(400, "Bad Request", "Username and password have to be unique")
+                    return
                 data["password"] = generate_password_hash(data["password"])
                 # TODO think abot parsing date
                 data["joined"] = datetime.now().date()
                 try:
                     id = self.create_user(data)
-                    if id:
-                        self.generic_resp(201, "Success")
+                    self.generic_resp(201, "Created")
+                    return
                 except Exception as e:
                     self.generic_resp(500, "Server Error", str(e))
-        except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+                    return
+            except Exception as e:
+                self.generic_resp(500, "Server Error", str(e))
+                return
 
 
 class UserHandler(BaseHandler, UserDatabaseHandler):
@@ -166,7 +173,12 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
 
     def get(self):
         """
-        Return user Information 
+        Return single user Information 
+
+        Codes:
+            404 -- if user not found or uuid doesnt exist
+            200 -- OK
+            500 -- Server Error
 
         example address: www.base.com/user?uuid=xxxx-xxxx-xxxx
 
@@ -175,6 +187,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         user_uuid = self.get_query_argument("uuid")
         if not user_uuid:
             self.generic_resp(404, "Not Found", "Missing uuid")
+            return
         else:
             try:
                 user_data = self.get_user(user_uuid)
@@ -183,12 +196,12 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
                 else:
                     result = dict()
                     result["user"] = user_data
+                    result["status"] = 200
+                    result["message"] = "OK"
                     self.write(json.dumps(result))
                     self.finish()
             except:
                 self.generic_resp(500, "Server Error")
-
-
 
     def put(self):
         """
@@ -198,20 +211,25 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         user_uuid = self.get_query_argument("uuid")
         if not user_uuid:
             self.generic_resp(404, "Not Found")
+            return
         else:
             data = self.request.body
             update_data = json.dumps(data)["update"]
 
-            for update_fields in update_data:
-                if update_field not in CUSTOM_USER_FIELDS:
-                    self.generic_resp(400, "Bad Request", "Missing update fields")
-#
-#             try:
-#                 self.update_user
-#
+            # refactor it
+            # for update_fields in update_data:
+            #     if update_field not in CUSTOM_USER_FIELDS:
+            #         self.generic_resp(400, "Bad Request", "Missing update fields")
 
+            try:
+                user_id = self.update_user(update_data)
+                if not user_id:
+                    self.generic_resp(500, "Server Error")
+                else:
+                    self.generic_resp(201, "Created", "Data succesfully updated")
 
-
+            except Exception as e:
+                self.generic_resp(500, "Server Error", str(e))
 
 
     def delete(self):
@@ -219,7 +237,17 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         Delete user 
         //needs to be validated
         """
-        pass
+        user_uuid = self.get_query_argument("uuid")
+        if not user_uuid:
+            self.generic_resp(404, "Not Found")
+
+        else:
+            # Authenticate here
+            try:
+                self.delete_user(user_uuid)
+            except Exception as e:
+                self.generic_resp(500, "Server Error", str(e))
+
 
 
 if __name__ == "__main__":
