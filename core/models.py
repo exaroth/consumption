@@ -11,10 +11,10 @@ metadata = MetaData()
 users = Table("users", metadata,
               Column("user_id", Integer, primary_key = True),
               Column("user_uuid", String, nullable = False),
-              Column("username", Unicode(40), nullable = False),
+              Column("username", String(40), nullable = False),
               Column("password", String(40)),
               Column("email", String(40), nullable = False),
-              Column("joined", DateTime),
+              Column("joined", String),
               UniqueConstraint("user_uuid", "username", "email")
              )
 

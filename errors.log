@@ -8,3 +8,1112 @@ Traceback (most recent call last):
   File "db_base.py", line 13, in <module>
     1/0
 ZeroDivisionError: integer division or modulo by zero
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x32a29f0>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1a019f0>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af0788>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af0838>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af08e8>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1046e10>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af0b50>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+WARNING:tornado.access:404 GET / (127.0.0.1) 1.46ms
+WARNING:tornado.access:404 GET /favicon.ico (127.0.0.1) 0.84ms
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1046e10>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af0ba8>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1a019f0>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af0af8>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x1af09f0>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+TypeError: __init__() takes exactly 1 argument (3 given)
+ERROR:tornado.application:Uncaught exception GET /users?limit=10&offset=0 (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='GET', uri='/users?limit=10&offset=0', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Cache-Control': 'max-age=0'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 93, in get
+    offset = self.get__query_argument("offset", 0)
+AttributeError: 'UsersHandler' object has no attribute 'get__query_argument'
+ERROR:tornado.access:500 GET /users?limit=10&offset=0 (127.0.0.1) 1.49ms
+ERROR:tornado.application:Uncaught exception GET /users?limit=10&offset=0 (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='GET', uri='/users?limit=10&offset=0', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Cache-Control': 'max-age=0'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 110, in get
+    self.generic_resp(500, "Server Error")
+  File "views.py", line 73, in generic_resp
+    self.set_status(status)
+NameError: global name 'self' is not defined
+ERROR:tornado.access:500 GET /users?limit=10&offset=0 (127.0.0.1) 5.37ms
+ERROR:tornado.access:500 GET /users?limit=10&offset=0 (127.0.0.1) 3.93ms
+ERROR:tornado.application:Uncaught exception GET /users?limit=10&offset=0 (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='GET', uri='/users?limit=10&offset=0', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Cache-Control': 'max-age=0'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 111, in get
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 130, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.27ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 130, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 2.02ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 130, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.26ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 130, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 1.99ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 130, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 2.00ms
+WARNING:tornado.access:404 POST /users (127.0.0.1) 1.24ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '0', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 132, in post
+    data = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '84', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 132, in post
+    rec = json.loads(self.request.body)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 488, in loads
+    return _default_decoder.decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 370, in decode
+    obj, end = self.raw_decode(s)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/decoder.py", line 389, in raw_decode
+    return self.scan_once(s, idx=_w(s, idx).end())
+JSONDecodeError: Expecting ':' delimiter: line 5 column 9 (char 67)
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.24ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 138, in post
+    data["password"] = generate_password(data["password"])
+NameError: global name 'generate_password' is not defined
+ERROR:tornado.access:500 POST /users (127.0.0.1) 8.48ms
+ERROR:root:Error creating user
+ERROR:tornado.access:500 POST /users (127.0.0.1) 9.45ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 148, in post
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+ERROR:root:Error creating user
+ERROR:tornado.access:500 POST /users (127.0.0.1) 8.29ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 148, in post
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+ERROR:root:Error creating user
+ERROR:tornado.access:500 POST /users (127.0.0.1) 5.49ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 148, in post
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+INFO:tornado.access:201 POST /users (127.0.0.1) 15.20ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 147, in post
+    self.generic_resp(500, "Server Error", str(e))
+  File "views.py", line 74, in generic_resp
+    self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 604, in write
+    raise RuntimeError("Cannot write() after finish().  May be caused "
+RuntimeError: Cannot write() after finish().  May be caused by using async operations without the @asynchronous decorator.
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 2.92ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.33ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 5.89ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.40ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.87ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.97ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.97ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.91ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.90ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 3.83ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 6.98ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '85', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 140, in post
+    self.generic_resp(304, "Not Modified", _meta = "Username or email not unique" )
+  File "views.py", line 78, in generic_resp
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 823, in finish
+    assert not self._write_buffer, "Cannot send body with 304"
+AssertionError: Cannot send body with 304
+ERROR:tornado.access:500 POST /users (127.0.0.1) 4.44ms
+INFO:tornado.access:201 POST /users (127.0.0.1) 14.08ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '87', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 150, in post
+    self.generic_resp(500, "Server Error", str(e))
+  File "views.py", line 76, in generic_resp
+    self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 604, in write
+    raise RuntimeError("Cannot write() after finish().  May be caused "
+RuntimeError: Cannot write() after finish().  May be caused by using async operations without the @asynchronous decorator.
+ERROR:tornado.access:500 GET /users (127.0.0.1) 2.03ms
+ERROR:tornado.application:Uncaught exception GET /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='GET', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 114, in get
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+ERROR:tornado.application:Uncaught exception GET /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='GET', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Connection': 'keep-alive', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 113, in get
+    self.generic_resp(500, "Server Error", e)
+  File "views.py", line 76, in generic_resp
+    self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/__init__.py", line 354, in dumps
+    return _default_encoder.encode(obj)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/encoder.py", line 262, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/encoder.py", line 340, in iterencode
+    return _iterencode(o, 0)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/simplejson/encoder.py", line 239, in default
+    raise TypeError(repr(o) + " is not JSON serializable")
+TypeError: TypeError('datetime.datetime(2014, 2, 7, 11, 22, 24, 375677) is not JSON serializable',) is not JSON serializable
+ERROR:tornado.access:500 GET /users (127.0.0.1) 10.57ms
+ERROR:root:Error creating user
+ERROR:tornado.access:500 POST /users (127.0.0.1) 8.22ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '89', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 151, in post
+    self.finish()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 805, in finish
+    raise RuntimeError("finish() called twice.  May be caused "
+RuntimeError: finish() called twice.  May be caused by using async operations without the @asynchronous decorator.
+INFO:tornado.access:201 POST /users (127.0.0.1) 14.68ms
+ERROR:tornado.application:Uncaught exception POST /users (127.0.0.1)
+HTTPRequest(protocol='http', host='localhost:8000', method='POST', uri='/users', version='HTTP/1.1', remote_ip='127.0.0.1', headers={'Origin': 'chrome-extension://fhjcajmcbmldlhcimfajhfbgofnpcjmb', 'Content-Length': '89', 'Accept-Language': 'pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4', 'Accept-Encoding': 'gzip,deflate,sdch', 'Host': 'localhost:8000', 'Accept': '*/*', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36', 'Connection': 'keep-alive', 'Cookie': 'm=6967:t|34e2:|2a03:t|3c0d:t|370d:t|6ef2:t|4e99:t|ca3:t|18c3:t; csrftoken=coc5Hk1fJmb2q0fEBsooVysXguwCpHUx', 'Content-Type': 'text/plain;charset=UTF-8'})
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1218, in _when_complete
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1239, in _execute_method
+    self._when_complete(method(*self.path_args, **self.path_kwargs),
+  File "views.py", line 151, in post
+    self.generic_resp(500, "Server Error", str(e))
+  File "views.py", line 76, in generic_resp
+    self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 604, in write
+    raise RuntimeError("Cannot write() after finish().  May be caused "
+RuntimeError: Cannot write() after finish().  May be caused by using async operations without the @asynchronous decorator.
+INFO:tornado.access:200 GET /users (127.0.0.1) 4.06ms
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x18faaf8>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x19f5418>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x19f5470>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 328, in _on_headers
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x7f6d5afc1f18>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Uncaught exception, closing connection.
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'
+ERROR:tornado.application:Exception in callback <functools.partial object at 0x19f5628>
+Traceback (most recent call last):
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/ioloop.py", line 477, in _run_callback
+    callback()
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/iostream.py", line 354, in wrapper
+    callback(*args)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 331, in wrapped
+    raise_exc_info(exc)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/stack_context.py", line 302, in wrapped
+    ret = fn(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/httpserver.py", line 344, in _on_request_body
+    self.request_callback(self._request)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 1651, in __call__
+    handler = spec.handler_class(self, request, **spec.kwargs)
+  File "views.py", line 67, in __init__
+    super(BaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/local/lib/python2.7/site-packages/tornado/web.py", line 123, in __init__
+    super(RequestHandler, self).__init__()
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 151, in __init__
+    super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+  File "/home/konrad/.venv/shop_api/core/db_base.py", line 30, in __init__
+    self.conn = self.application.conn
+AttributeError: 'UsersHandler' object has no attribute 'application'

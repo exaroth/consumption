@@ -24,7 +24,7 @@ class TestDBUtilities(unittest.TestCase):
         metadata.bind = engine
         metadata.create_all()
         self.conn = engine.connect()
-        self.db_handler = BaseDBHandler()
+        self.db_handler = BaseDBHandler(self.conn)
         self.uuid1 = str(uuid.uuid4())
         test_user = users.insert().values(user_uuid = self.uuid1, username = u"konrad", password = "deprofundis", email = "depro@depro.com")
         self.conn.execute(test_user)
@@ -378,7 +378,7 @@ class TestBoughtProductsDB(unittest.TestCase):
         metadata.bind = engine
         metadata.create_all()
         self.conn = engine.connect()
-        self.db_handler = BaseDBHandler()
+        self.db_handler = BaseDBHandler(self.conn)
         self.uuid1 = str(uuid.uuid4())
         test_user = users.insert().values(user_uuid = self.uuid1, username = u"konrad", password = "deprofundis", email = "depro@depro.com")
         self.conn.execute(test_user)

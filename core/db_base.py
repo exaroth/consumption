@@ -23,6 +23,9 @@ class BaseDBHandler(object):
     Implements basic functions for database interaction.
     """
 
+    def __init__(self, conn = None):
+        if conn:
+            self.conn = conn
 
     def parse_query_data(self, query, iter, id = False):
         """
@@ -141,10 +144,11 @@ class UserDatabaseHandler(BaseDBHandler):
     accepts connection object as argument (optionally)
     """
 
+    def __init__(self, *args, **kwargs):
+
+        super(UserDatabaseHandler, self).__init__(*args, **kwargs)
+
         
-    def __init__(self, conn = None):
-        if conn:
-            self.conn = conn
 
     # not needed
     # def user_exists(self, uuid):
@@ -470,9 +474,9 @@ class ProductDatabaseHandler(BaseDBHandler):
     to sqlalchemy db
     """
 
-    def __init__(self, conn = None):
-        if conn:
-            self.conn = conn
+    def __init__(self, *args, **kwargs):
+
+        super(ProductDatabaseHandler, self).__init__(*args, **kwargs)
 
     def generate_product_uuid(self):
         """
