@@ -253,6 +253,8 @@ class UserDatabaseHandler(BaseDBHandler):
         safe -- whether to remove secure fields from query
         """
         try:
+            if not self.check_exists(users.c.user_uuid, uuid):
+                return dict()
             if safe:
                 res = self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
                 for field in SECURE_USER_FIELDS:
@@ -301,15 +303,24 @@ class UserDatabaseHandler(BaseDBHandler):
             trans.rollback()
             raise
 
-    def list_all_users(self, limit, offset):
+    def list_all_users(self, limit, offset, safe = False):
 
         """
         Returns list of users from db 
         limit -- limit amount of rows returned (int),
         offset -- offset for a query (int)
+        safe -- removes private user information from result
         """
         try:
-            return self.get_all_rows(users, USER_FIELDS, limit, offset)
+
+            result = self.get_all_rows(users, USER_FIELDS, limit, offset)
+            if safe:
+                for key, value in result.items():
+                    for field in SECURE_USER_FIELDS:
+                        del result[key][field]
+
+                return result
+            return result
         except:
             raise
 

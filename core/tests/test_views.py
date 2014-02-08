@@ -10,6 +10,8 @@ from views import Application
 
 from models import users, bought_products, products, engine, metadata
 from sqlalchemy import create_engine
+from sqlalchemy.sql import select
+import uuid
 
 
 class TestUserOperations(AsyncHTTPTestCase):
@@ -142,6 +144,43 @@ class TestUserOperations(AsyncHTTPTestCase):
 
         self.assertEquals(3, dump["_metadata"]["total"])
         self.assertEquals(3, len(dump["users"]))
+
+    def test_getting_single_user_info(self):
+        data = dict()
+        data["user"] = dict(
+            username = u"konrad",
+            password = "deprofundis",
+            email = "konrad@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        data = dict()
+        data["user"] = dict(
+            username = u"malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        sel = select([users.c.user_uuid]).where(users.c.username == "konrad")
+        konrad_uuid = self.conn.execute(sel).scalar()
+
+        res = self.fetch("/user?uuid="+konrad_uuid, method = "GET")
+
+        self.assertEquals(200, res.code)
+        self.assertIn("konrad", res.body)
+        self.assertNotIn("password", res.body)
+        self.assertNotIn("deprofundis", res.body)
+
+        nonexistent = str(uuid.uuid4())
+
+        res = self.fetch("/user?uuid="+nonexistent, method = "GET")
+        
+        self.assertEquals(404, res.code)
+        self.assertIn("Not Found", res.body)
+
+
+
+
 
 
 

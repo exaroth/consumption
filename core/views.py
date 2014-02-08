@@ -100,7 +100,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         limit = self.get_query_argument("limit", 10)
         offset = self.get_query_argument("offset", 0)
         try:
-            list_of_users = self.list_all_users(limit, offset)
+            list_of_users = self.list_all_users(limit, offset, safe = True)
             number_of_users = self.get_number_of_users()
 
             result = dict()
@@ -114,9 +114,12 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
 
             self.write(json.dumps(result))
             self.finish()
+            return
         except Exception as e:
             self.generic_resp(500, "Server Error", str(e))
+            print e
             self.finish()
+            return
 
     def post(self):
         """
@@ -168,8 +171,6 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
 
 class UserHandler(BaseHandler, UserDatabaseHandler):
 
-    def __init__(self):
-        self.conn = self.application.conn
 
     def get(self):
         """
@@ -180,28 +181,39 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             200 -- OK
             500 -- Server Error
 
-        example address: www.base.com/user?uuid=xxxx-xxxx-xxxx
+        example address: www.base.com/user?uuid=xxxx-xxxx-xxxx&password=y
 
         """
                 
         user_uuid = self.get_query_argument("uuid")
+        password = self.get_query_argument("password", None)
+        visitor = True
+        if password:
+            # authenticate user
+            # visitor = x
+            pass
         if not user_uuid:
             self.generic_resp(404, "Not Found", "Missing uuid")
             return
         else:
             try:
-                user_data = self.get_user(user_uuid)
+                # if authenticated
+                user_data = self.get_user(user_uuid, safe = True)
                 if not user_data:
                     self.generic_resp(404, "Not Found", "User doesnt exist")
+                    return
                 else:
                     result = dict()
                     result["user"] = user_data
                     result["status"] = 200
                     result["message"] = "OK"
+                    self.set_status(200)
                     self.write(json.dumps(result))
                     self.finish()
-            except:
-                self.generic_resp(500, "Server Error")
+                    return
+            except Exception as e:
+                self.generic_resp(500, "Server Error", str(e))
+                return
 
     def put(self):
         """
@@ -224,7 +236,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             try:
                 user_id = self.update_user(update_data)
                 if not user_id:
-                    self.generic_resp(500, "Server Error")
+                    self.generic_resp(404, "Server Error")
                 else:
                     self.generic_resp(201, "Created", "Data succesfully updated")
 
