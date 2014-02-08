@@ -185,6 +185,26 @@ class UserDatabaseHandler(BaseDBHandler):
         except:
             raise
 
+    def get_credentials(self, identifier):
+        """
+        Return username and password
+        used for user verification
+        identifier might be either uuid or username
+        """
+
+        sel = select([users.c.username, users.c.password])\
+                .where(or_(
+                    users.c.username == identifier,
+                    users.c.user_uuid == identifier
+                ))
+
+        try:
+            res = self.conn.execute(sel).fetchone()
+            return res
+        except:
+            raise
+
+
     def save_user(self, data):
        """
        Create new user with given data
@@ -244,23 +264,29 @@ class UserDatabaseHandler(BaseDBHandler):
             raise
 
 
-    def get_user(self, uuid, safe = False):
+    def get_user(self, identifier, safe = False, direct = False):
         """
         Get user with given uuid 
         
         Keyword Arguments:
-        uuid -- unique user uuid
-        safe -- whether to remove secure fields from query
+        identifier -- unique user identifier
+        safe -- if false returns full query data
+        uuid -- if True looks by user_uuid field else looks by username
+        direct -- if False looks by user_uuid column else by username
         """
+        if not direct:
+            haystack = users.c.user_uuid
+        else:
+            haystack = users.c.username
         try:
-            if not self.check_exists(users.c.user_uuid, uuid):
+            if not self.check_exists(haystack, identifier):
                 return dict()
             if safe:
-                res = self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
+                res = self.get_row(haystack, identifier, USER_FIELDS)
                 for field in SECURE_USER_FIELDS:
                     del res[field]
                 return res
-            return self.get_row(users.c.user_uuid, uuid, USER_FIELDS)
+            return self.get_row(haystack, identifier, USER_FIELDS)
         except:
             raise
 

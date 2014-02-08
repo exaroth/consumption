@@ -164,8 +164,7 @@ class TestUserOperations(AsyncHTTPTestCase):
         sel = select([users.c.user_uuid]).where(users.c.username == "konrad")
         konrad_uuid = self.conn.execute(sel).scalar()
 
-        res = self.fetch("/user?uuid="+konrad_uuid, method = "GET")
-
+        res = self.fetch("/user?id="+konrad_uuid , method = "GET")
         self.assertEquals(200, res.code)
         self.assertIn("konrad", res.body)
         self.assertNotIn("password", res.body)
@@ -173,14 +172,18 @@ class TestUserOperations(AsyncHTTPTestCase):
 
         nonexistent = str(uuid.uuid4())
 
-        res = self.fetch("/user?uuid="+nonexistent, method = "GET")
-        
+        res = self.fetch("/user?id="+nonexistent, method = "GET")
+
         self.assertEquals(404, res.code)
         self.assertIn("Not Found", res.body)
 
+        # test getting informatin on authenticated user
 
-
-
+        user_data = self.fetch("/user?id=konrad&password=deprofundis&direct=1", method = "GET")
+        print user_data.body
+        self.assertEquals(user_data.code, 200)
+        self.assertIn("password", user_data.body)
+        self.assertIn("konrad", user_data.body)
 
 
 

@@ -23,7 +23,7 @@ from datetime import datetime
 
 from config import *
 from models import users, bought_products, products, engine
-from db_base import UserDatabaseHandler
+from db_base import UserDatabaseHandler, ProductDatabaseHandler
 from helper_functions import generate_password_hash, check_password_hash
 
 
@@ -82,6 +82,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_status(status)
         self.finish()
 
+
 class UsersHandler(BaseHandler, UserDatabaseHandler):
 
     def get(self):
@@ -117,7 +118,6 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
             return
         except Exception as e:
             self.generic_resp(500, "Server Error", str(e))
-            print e
             self.finish()
             return
 
@@ -143,33 +143,48 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         rec = json.loads(self.request.body)
         # Process data  -- remove whitespace
         # Validate data here
+        # Should be validated on frontend side first
         data = rec["user"]
         check = True
         for field in ("username", "email", "password"):
             if field not in data.keys():
                 self.generic_resp(400, "Bad Request", "Missing fields")
+                # return
+        try:
+            if not self.credentials_unique(data["username"], data["email"]):
+                self.generic_resp(400, "Bad Request", "Username and password have to be unique")
                 return
-        else:
+            data["password"] = generate_password_hash(data["password"])
+            # TODO think abot parsing date
+            data["joined"] = datetime.now().date()
             try:
-                if not self.credentials_unique(data["username"], data["email"]):
-                    self.generic_resp(400, "Bad Request", "Username and password have to be unique")
-                    return
-                data["password"] = generate_password_hash(data["password"])
-                # TODO think abot parsing date
-                data["joined"] = datetime.now().date()
-                try:
-                    id = self.create_user(data)
-                    self.generic_resp(201, "Created")
-                    return
-                except Exception as e:
-                    self.generic_resp(500, "Server Error", str(e))
-                    return
+                id = self.create_user(data)
+                self.generic_resp(201, "Created")
+                return
             except Exception as e:
                 self.generic_resp(500, "Server Error", str(e))
                 return
+        except Exception as e:
+            self.generic_resp(500, "Server Error", str(e))
+            return
 
 
 class UserHandler(BaseHandler, UserDatabaseHandler):
+
+
+    def authenticate_user(self, unique, password):
+        """
+        Basic authentication function 
+        requires unique identifier (username or uuid) and password
+        """
+        user = self.get_credentials(unique)
+
+        if not user:
+            return False
+
+        authenticated = check_password_hash(password, user[1])
+        return authenticated
+
 
 
     def get(self):
@@ -181,84 +196,128 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             200 -- OK
             500 -- Server Error
 
-        example address: www.base.com/user?uuid=xxxx-xxxx-xxxx&password=y
+        example address: www.base.com/user?id=xxxx-xxxx-xxxx&password=y&direct=1
+
+        query parameters:
+            id -- unique user identifier : uuid or username
+            password -- (optional) if provided authenticates
+            the user and gives detailed account info
+            direct -- whether it is direct connection (username provided - 1)
+            or remote (uuid is checked - 0) defaults to 0
 
         """
                 
-        user_uuid = self.get_query_argument("uuid")
+        identifier = self.get_query_argument("id")
         password = self.get_query_argument("password", None)
+        direct_arg = self.get_query_argument("direct", 0)
+        try:
+            direct = bool(int(direct_arg))
+        except:
+            direct = 0
+
         visitor = True
-        if password:
-            # authenticate user
-            # visitor = x
-            pass
-        if not user_uuid:
+        if not identifier:
             self.generic_resp(404, "Not Found", "Missing uuid")
             return
-        else:
-            try:
-                # if authenticated
-                user_data = self.get_user(user_uuid, safe = True)
-                if not user_data:
-                    self.generic_resp(404, "Not Found", "User doesnt exist")
-                    return
-                else:
-                    result = dict()
-                    result["user"] = user_data
-                    result["status"] = 200
-                    result["message"] = "OK"
-                    self.set_status(200)
-                    self.write(json.dumps(result))
-                    self.finish()
-                    return
-            except Exception as e:
-                self.generic_resp(500, "Server Error", str(e))
+        if password:
+            auth = self.authenticate_user(identifier, password)
+            if auth:
+                visitor = False
+        try:
+            # if authenticated
+            user_data = self.get_user(identifier, safe = visitor, direct = direct)
+            if not user_data:
+                self.generic_resp(404, "Not Found", "User doesnt exist")
                 return
+            else:
+                result = dict()
+                result["user"] = user_data
+                result["status"] = 200
+                result["message"] = "OK"
+                self.set_status(200)
+                self.write(json.dumps(result))
+                self.finish()
+                return
+        except Exception as e:
+            self.generic_resp(500, "Server Error", str(e))
+            return
 
     def put(self):
         """
         Update user_information 
         //needs to be authenticated
+        sample request:
+            www.base.com/user?username=x&password=y
+
+        body:
+            json file containing data that can be modified
+            update: data
         """
-        user_uuid = self.get_query_argument("uuid")
-        if not user_uuid:
-            self.generic_resp(404, "Not Found")
+        username = self.get_query_argument("username")
+        password = self.get_query_argument("password")
+
+        if not username or not password:
+            self.generic_resp(403, "Forbidden")
             return
-        else:
-            data = self.request.body
-            update_data = json.dumps(data)["update"]
-
-            # refactor it
-            # for update_fields in update_data:
-            #     if update_field not in CUSTOM_USER_FIELDS:
-            #         self.generic_resp(400, "Bad Request", "Missing update fields")
-
-            try:
-                user_id = self.update_user(update_data)
-                if not user_id:
-                    self.generic_resp(404, "Server Error")
-                else:
-                    self.generic_resp(201, "Created", "Data succesfully updated")
-
-            except Exception as e:
-                self.generic_resp(500, "Server Error", str(e))
+        authenticated = self.authenticate_user(username, password)
+        if not authenticated:
+            self.generic_resp(403, "Forbidden")
+            return
+        data = self.request.body
+        update_data = json.dumps(data)["update"]
+        try:
+            user_id = self.update_user(update_data)
+            if not user_id:
+                self.generic_resp(404, "Server Error")
+                return
+            else:
+                self.generic_resp(201, "Created", "Data succesfully updated")
+                return
+        except Exception as e:
+            self.generic_resp(500, "Server Error", str(e))
+            return
 
 
     def delete(self):
         """
         Delete user 
         //needs to be validated
+        sample request: www.base.com?identifier=x&password=y
         """
-        user_uuid = self.get_query_argument("uuid")
-        if not user_uuid:
-            self.generic_resp(404, "Not Found")
+        identifier = self.get_query_argument("identifier")
+        password = self.get_query_argument("password")
 
+        if not username or not password:
+            self.generic_resp(403, "Forbidden")
+            return
+
+        authenticated = self.authenticate_user(identifier, password)
+        if not authenticated:
+            self.generic_resp(403, "Forbidden")
+            return
         else:
-            # Authenticate here
             try:
-                self.delete_user(user_uuid)
+                self.delete_user(identifier)
+                self.generic_resp(200, "OK")
+                return
             except Exception as e:
                 self.generic_resp(500, "Server Error", str(e))
+                return
+
+class AuthenticationHandler(BaseHandler):
+    """
+    Simple authentication view for
+    comparing username and password
+    implements only get method and is meant to be used 
+    by async http client on backend side
+    it also requires api_key generated by function that calls it
+
+    sample request: www.base.py/auth?username=x&password=y?api_key=z
+    """
+    # username = self.get_query_argument("username", None)
+    # password = self.get_query_argument("password", None)
+    # api_key = self.get_query_argument("api_key", None)
+    # pass # do it later
 
 
 

@@ -555,11 +555,6 @@ class TestBoughtProductsDB(unittest.TestCase):
         q = self.conn.execute(bought_quantity).scalar()
         self.assertEquals(q, 12)
 
-
-
-
-
-
 if __name__ == "__main__":
     unittest.main()
 

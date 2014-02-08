@@ -18,4 +18,3 @@ def check_password_hash(password, signature):
 
     return signature == generate_password_hash(password)
 
-
