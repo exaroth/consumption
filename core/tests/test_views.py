@@ -169,23 +169,65 @@ class TestUserOperations(AsyncHTTPTestCase):
         self.assertIn("konrad", res.body)
         self.assertNotIn("password", res.body)
         self.assertNotIn("deprofundis", res.body)
-
         nonexistent = str(uuid.uuid4())
-
         res = self.fetch("/user?id="+nonexistent, method = "GET")
-
         self.assertEquals(404, res.code)
         self.assertIn("Not Found", res.body)
-
-        # test getting informatin on authenticated user
-
+        # test getting information on authenticated user
         user_data = self.fetch("/user?id=konrad&password=deprofundis&direct=1", method = "GET")
-        print user_data.body
         self.assertEquals(user_data.code, 200)
         self.assertIn("password", user_data.body)
         self.assertIn("konrad", user_data.body)
+        # remote get
+        user_data = self.fetch("/user?id=" + konrad_uuid + "&password=deprofundis&direct=0", method = "GET")
+        self.assertEquals(user_data.code, 200)
+        self.assertIn("password", user_data.body)
+        self.assertIn("konrad", user_data.body)
+        # direct with no password
+        user_data = self.fetch("/user?id=konrad&direct=1", method = "GET")
+        self.assertEquals(user_data.code, 200)
+        self.assertIn("konrad", user_data.body)
+        self.assertNotIn("password", user_data.body)
+        # direct with nonexistent account
+        user_data = self.fetch("/user?id=nonexistent&direct=1")
+        self.assertEquals(user_data.code, 404)
+        self.assertIn("User doesnt exist", user_data.body)
+        # password with nonexxistent
+        user_data = self.fetch("/user?id=nonexistent&password=test")
+        self.assertEquals(404, user_data.code)
+        # all with nonexistent
+        user_data = self.fetch("/user?id=nonexistent&password=test&direct=1")
+        self.assertEquals(404, user_data.code)
+        user_data = self.fetch("/user?id=nonexistent&password=test&direct=0")
+        self.assertEquals(404, user_data.code)
 
+    def test_updating_user_info(self):
+        data = dict()
+        data["user"] = dict(
+            username = u"konrad",
+            password = "deprofundis",
+            email = "konrad@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        data = dict()
+        data["user"] = dict(
+            username = u"malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
 
+        data = dict()
+
+        data["update"] = dict(
+            password = "depro",
+            email = "zmieniony@gmail.com"
+        )
+
+        resp = self.fetch("/user?username=konrad&password=deprofundis", method = "PUT", body= json.dumps(data))
+        print resp.body
+        
+        
 
 if __name__ == "__main__":
     tornado.testing.main()

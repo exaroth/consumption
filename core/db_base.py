@@ -306,25 +306,30 @@ class UserDatabaseHandler(BaseDBHandler):
             logging.error("Error deleting user")
             raise
 
-    def update_user(self, uuid, data):
+    def update_user(self, identifier, data, uuid = True):
         """
         Updates user values with given data
         
         Keyword Arguments:
-        uuid -- unique user\'s uuid,
+        identifier -- unique user\'s uuid (if uuid = True) or username,
         data -- dictionary containg {field_name : value} (dict)
         """
+        if uuid:
+            haystack = users.c.user_uuid
+        else:
+            haystack = users.c.username
         items_to_update = dict()
         for key, value in data.items():
             if key in CUSTOM_USER_FIELDS:
                 items_to_update[key] = value
         update_q = users.update()\
-                .where(users.c.user_uuid == uuid)\
+                .where(haystack == identifier)\
                 .values(**items_to_update)
         trans = self.conn.begin()
         try:
-            self.conn.execute(update_q)
+            resp = self.conn.execute(update_q)
             trans.commit()
+            return resp.last_updated_params()
         except:
             trans.rollback()
             raise

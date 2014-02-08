@@ -135,7 +135,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         Response Codes:
             201 -- Account Created
             400 -- Bad Request( Wrong credentials )
-            500 -- Server Error
+            500 -- Server Error - see _meta key for info
         """
 
         if not self.request.body:
@@ -176,6 +176,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         """
         Basic authentication function 
         requires unique identifier (username or uuid) and password
+        Returns : bool
         """
         user = self.get_credentials(unique)
 
@@ -194,9 +195,11 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         Codes:
             404 -- if user not found or uuid doesnt exist
             200 -- OK
-            500 -- Server Error
+            500 -- Server Error -- see _meta key for info
 
-        example address: www.base.com/user?id=xxxx-xxxx-xxxx&password=y&direct=1
+        example addresses: www.base.com/user?id=xxxx-xxxx-xxxx&password=y&direct=0
+                           www.base.com/user?id=konrad&direct=1
+                           www.base.com/user?id=xxxx-xxxx-xxxx
 
         query parameters:
             id -- unique user identifier : uuid or username
@@ -246,12 +249,28 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         """
         Update user_information 
         //needs to be authenticated
-        sample request:
+        sample requests:
             www.base.com/user?username=x&password=y
+
 
         body:
             json file containing data that can be modified
-            update: data
+            update: data containing values to be updated eg.
+            'update':{
+                'password': 'zmieniony',
+                'email': 'zmieniony@gmail.com'
+            }
+            All fields that dont exist in CUSTOM_USER_FIELDS in config.py
+            are discarded
+
+            If updated correctly returns all updated fields info in _meta key
+            
+            Status codes:
+                403 -- if no username or password or failed authentication
+                304 -- if no data provided
+                201 -- if updated succesfuly
+                500 -- internal server error, see _meta key for info
+
         """
         username = self.get_query_argument("username")
         password = self.get_query_argument("password")
@@ -260,18 +279,27 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             self.generic_resp(403, "Forbidden")
             return
         authenticated = self.authenticate_user(username, password)
+        print authenticated
         if not authenticated:
             self.generic_resp(403, "Forbidden")
             return
         data = self.request.body
-        update_data = json.dumps(data)["update"]
+        update_data = json.loads(data)["update"]
+        if not update_data:
+            self.set_status(304)
+            self.finish()
+            return
+        if update_data["password"]:
+            update_data["password"] = generate_password_hash(update_data["password"])
         try:
-            user_id = self.update_user(update_data)
-            if not user_id:
-                self.generic_resp(404, "Server Error")
+            updated = self.update_user(username, update_data, uuid = False)
+            print updated
+            print type(updated)
+            if not updated:
+                self.generic_resp(500, "Server Error")
                 return
             else:
-                self.generic_resp(201, "Created", "Data succesfully updated")
+                self.generic_resp(201, "Created", json.dumps(updated))
                 return
         except Exception as e:
             self.generic_resp(500, "Server Error", str(e))
@@ -290,7 +318,6 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         if not username or not password:
             self.generic_resp(403, "Forbidden")
             return
-
         authenticated = self.authenticate_user(identifier, password)
         if not authenticated:
             self.generic_resp(403, "Forbidden")
