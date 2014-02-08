@@ -279,22 +279,19 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             self.generic_resp(403, "Forbidden")
             return
         authenticated = self.authenticate_user(username, password)
-        print authenticated
         if not authenticated:
             self.generic_resp(403, "Forbidden")
             return
         data = self.request.body
-        update_data = json.loads(data)["update"]
-        if not update_data:
+        if not data or not "update" in json.loads(data).keys():
             self.set_status(304)
             self.finish()
             return
-        if update_data["password"]:
+        update_data = json.loads(data)["update"]
+        if "password" in update_data.keys():
             update_data["password"] = generate_password_hash(update_data["password"])
         try:
             updated = self.update_user(username, update_data, uuid = False)
-            print updated
-            print type(updated)
             if not updated:
                 self.generic_resp(500, "Server Error")
                 return
@@ -308,23 +305,24 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
 
     def delete(self):
         """
-        Delete user 
-        //needs to be validated
-        sample request: www.base.com?identifier=x&password=y
+        Delete user with given username or password
+        Requires Validation
+        Sample request:
+            www.base.com?id=x&password=y
         """
-        identifier = self.get_query_argument("identifier")
-        password = self.get_query_argument("password")
+        id = self.get_query_argument("id", None)
+        password = self.get_query_argument("password", None)
 
-        if not username or not password:
+        if not id or not password:
             self.generic_resp(403, "Forbidden")
             return
-        authenticated = self.authenticate_user(identifier, password)
+        authenticated = self.authenticate_user(id, password)
         if not authenticated:
             self.generic_resp(403, "Forbidden")
             return
         else:
             try:
-                self.delete_user(identifier)
+                self.delete_user(id, uuid = False)
                 self.generic_resp(200, "OK")
                 return
             except Exception as e:

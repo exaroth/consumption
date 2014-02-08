@@ -290,16 +290,20 @@ class UserDatabaseHandler(BaseDBHandler):
         except:
             raise
 
-    def delete_user(self, uuid):
+    def delete_user(self, identifier, uuid = True):
         """
         Deletes user with given uuid 
         
         Keyword Arguments:
         uuid -- unique users uuid
         """
+        if uuid:
+            haystack = users.c.user_uuid
+        else:
+            haystack = users.c.username
         trans = self.conn.begin()
         try:
-            self.delete_row(users.c.uuid, uuid)
+            self.delete_row(haystack, identifier)
             trans.commit()
         except:
             trans.rollback()

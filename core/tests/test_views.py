@@ -216,16 +216,108 @@ class TestUserOperations(AsyncHTTPTestCase):
             email = "malgosia@gmail.com"
         )
         self.fetch("/users", method = "POST", body = json.dumps(data))
-
         data = dict()
-
         data["update"] = dict(
             password = "depro",
             email = "zmieniony@gmail.com"
         )
-
         resp = self.fetch("/user?username=konrad&password=deprofundis", method = "PUT", body= json.dumps(data))
-        print resp.body
+        self.assertEquals(201, resp.code)
+        self.assertIn("zmieniony@gmail.com", resp.body)
+        self.assertIn("password", resp.body)
+        # test wrong password
+        resp = self.fetch("/user?username=konrad&password=nieprawidlowy", method = "PUT", body= json.dumps(data))
+        self.assertEquals(403, resp.code)
+        # test wrong username
+        resp = self.fetch("/user?username=nieprawidlowy&password=nieprawidlowy", method = "PUT", body= json.dumps(data))
+        self.assertEquals(403, resp.code)
+        # test providing additional data
+        data["update"] = dict(
+            email = "crap@gmail.com",
+            somecrap = "crapcrapcrap"
+        )
+        resp = self.fetch("/user?username=konrad&password=depro", method = "PUT", body= json.dumps(data))
+        self.assertEquals(201, resp.code)
+        self.assertIn("crap@gmail.com", resp.body)
+        # test providing no data
+        data = dict()
+        resp = self.fetch("/user?username=konrad&password=depro", method = "PUT", body= json.dumps(data))
+        self.assertEquals(304, resp.code)
+
+    def test_deleting_users(self):
+        data = dict()
+        data["user"] = dict(
+            username = u"konrad",
+            password = "deprofundis",
+            email = "konrad@gmail.com"
+        )
+
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        data = dict()
+        data["user"] = dict(
+            username = u"malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        resp = self.fetch("/user?id=konrad&password=deprofundis", method = "DELETE")
+
+        self.assertEquals(200, resp.code )
+
+        sel = select([users])
+        res = self.conn.execute(sel).fetchall()
+        self.assertEquals(1, len(res))
+
+        resp = self.fetch("/users")
+        self.assertNotIn("konrad", resp.body)
+
+
+        resp = self.fetch("/user?id=malgosia&password=malgosia", method = "DELETE")
+
+        sel = select([users])
+        res = self.conn.execute(sel).fetchall()
+        self.assertEquals(0, len(res))
+
+        resp = self.fetch("/users")
+        self.assertNotIn("malgosia", resp.body)
+
+        # test for invalid credentials
+        data = dict()
+        data["user"] = dict(
+            username = u"malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        # username
+
+        resp = self.fetch("/user?id=invalid&password=malgosia", method = "DELETE")
+        self.assertEquals(403, resp.code )
+
+        # password
+
+        resp = self.fetch("/user?id=malgosia&password=invalid", method = "DELETE")
+        self.assertEquals(403, resp.code )
+
+        # not enought data
+
+        resp = self.fetch("/user?id=malgosia", method = "DELETE")
+        self.assertEquals(403, resp.code )
+
+class TestProductOperations(AsyncHTTPTestCase):
+
+    def get_app(self):
+        engine = create_engine("sqlite:///:memory:")
+        metadata.bind = engine
+        self.conn = engine.connect()
+        metadata.create_all()
+        return Application(self.conn)
+
+    def tearDown(self):
+        metadata.drop_all()
+
         
         
 
