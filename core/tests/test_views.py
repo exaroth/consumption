@@ -617,7 +617,21 @@ class TestProductOperations(AsyncHTTPTestCase):
         self.assertEquals(404, resp.code)
 
 
-    def test_updating_product(self):
+    def test_remote_authentication(self):
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "exaroth@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+
+
+
+
+
+    def tedating_product(self):
         data = dict()
         data["user"] = dict(
             username = "konrad",
@@ -634,6 +648,38 @@ class TestProductOperations(AsyncHTTPTestCase):
         )
         resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
         self.assertEquals(201, resp.code)
+
+        data = dict()
+
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis"
+        )
+        data["update"] = dict(
+            product_desc = "depro"
+        )
+
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+        print resp.body
+
+    # def test_testing(self):
+    #     data = dict()
+    #     data["user"] = dict(
+    #         username = "konrad",
+    #         password = "deprofundis",
+    #         email = "exaroth@gmail.com"
+    #     )
+    #     self.fetch("/users", method = "POST", body = json.dumps(data))
+    #     print "xdeprofundis clamo ad te domien"
+
+    #     x = self.fetch("/test", method = "GET")
+    #     print x.body
+
+
+
+
+
+
 
 
 

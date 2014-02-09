@@ -59,7 +59,9 @@ class Application(tornado.web.Application):
             (r"/user", UserHandler),
             (r"/products", ProductsHandler),
             (r"/product", ProductHandler),
-            (r"/auth", AuthenticationHandler)
+            (r"/auth", AuthenticationHandler),
+            # (r"/test", TestHandler)
+
         ]
         settings = {
             "debug": DEBUG
@@ -141,7 +143,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return self.request.protocol + "://" + self.request.host + route
 
-    @tornado.web.asynchronous
+    @gen.coroutine
     def remote_auth(self, username, password, persist = 0):
 
         """
@@ -152,19 +154,26 @@ class BaseHandler(tornado.web.RequestHandler):
         if persist is 1 returns secure cookie
         """
 
-        return self.request.protocol + "://" + self.request.host\
-                + "/auth?username=" + username + "&password=" + password\
-                + "&persist=" + persist
 
-    @tornado.web.asynchronous
+        query = "/auth?username=" + username + "&password=" + password\
+                + "&persist=" + str(persist)
+
+        req = HTTPRequest(self.get_self_url(query), method = "GET")
+        res = yield gen.Task(AsyncHTTPClient().fetch, req)
+        raise gen.Return(res.body)
+
+    @gen.coroutine
     def get_item_data(self, identifier, direct = 0):
         """
         Returns item information
         if direct == 1 looks by product_uuid
         """
 
-        return self.request.protocol + "://" + self.request.host\
-                + "/product?id=" + identifier + "&direct=" + direct
+        query = "/product?id=" + identifier + "&direct=" + str(direct)
+        req = HTTPRequest(self.get_self_url(query), method = "GET")
+        res = yield gen.Task(AsyncHTTPClient().fetch, req)
+        raise gen.Return(res.body)
+
 
 
 class UsersHandler(BaseHandler, UserDatabaseHandler):
@@ -608,7 +617,7 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
         returns json file containing data that has been updated
         """
 
-        body = json.dumps(self.request.body)
+        body = json.loads(self.request.body)
         if not body:
             self.generic_resp(400, "No information given")
             return
@@ -621,15 +630,17 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
             return
     
         try:
-            authenticated = int(self.remote_auth(user_data["username"], user_data["password"]))
+            authenticated = yield self.remote_auth(user_data["username"], user_data["password"])
+            print authenticated
             if not authenticated:
                 self.generic_resp(401, "Authentication failed")
-            full_product_data = self.get_item_data(product_data["product_name"], direct = 0)
-            if full_product_data["seller"] != user_data["username"]:
-                self.generic_resp(401, "You dont have permission to update this item")
-                return
-        except:
-            self.generic_resp(500)
+            # full_product_data = self.get_item_data(product_data["product_name"], direct = 0)
+            # print full_product_data
+            # if full_product_data["seller"] != user_data["username"]:
+            #     self.generic_resp(401, "You dont have permission to update this item")
+            #     return
+        except Exception as e:
+            self.generic_resp(500, str(e))
             return
 
         try:
