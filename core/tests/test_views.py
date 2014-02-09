@@ -481,6 +481,72 @@ class TestProductOperations(AsyncHTTPTestCase):
         resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
         self.assertEquals(400, resp.code)
 
+    def test_getting_product_info(self):
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "exaroth@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "wruumm",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        resp = self.fetch("/products")
+        self.assertEquals(200, resp.code)
+
+        self.assertIn("wiertarka", resp.body)
+        self.assertIn("konrad", resp.body)
+        self.assertIn("limit", resp.body)
+
+        q = json.loads(resp.body)
+
+        list_of_products = q["products"]
+        metadata = q["_metadata"]
+
+        self.assertEquals(1, len(list_of_products))
+
+        first =list_of_products[list_of_products.keys()[0]]
+        self.assertEquals("Other", first["category"])
+        self.assertEquals("wiertarka", first["product_name"])
+        self.assertEquals("konrad", first["seller"])
+        self.assertEquals(10, metadata["limit"])
+        self.assertEquals(0, metadata["offset"])
+
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "slownik",
+            product_desc = "wruumm",
+            price = "120zl",
+            category = "ksiazki"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+        resp = self.fetch("/products")
+        q = json.loads(resp.body)
+
+        list_of_products = q["products"]
+        metadata = q["_metadata"]
+
+        self.assertEquals(2, len(list_of_products))
+
+        second =list_of_products[list_of_products.keys()[1]]
+        self.assertEquals("ksiazki", second["category"])
+        self.assertEquals("slownik", second["product_name"])
+
+
+
+
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
         engine = create_engine("sqlite:///:memory:")
