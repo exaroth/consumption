@@ -5,9 +5,12 @@ Description: Base views classes
 '''
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+
 
 import tornado.options
 import tornado.web
+from tornado import gen
 from tornado.options import define, options
 
 
@@ -74,6 +77,18 @@ class BaseHandler(tornado.web.RequestHandler):
     def __init__(self, *args, **kwargs):
         super(BaseHandler, self).__init__(*args, **kwargs)
         self.conn = self.application.conn
+        self.client = AsyncHTTPClient()
+
+        self.response_codes = dict(
+            Success = 200,
+            Bad_Request = 400,
+            Server_Error = 500,
+            Created = 201,
+            Not_Modified = 304,
+            Not_Found = 404,
+            Unauthorized = 401,
+            Forbidden = 403
+        )
 
     def initialize(self):
         pass
@@ -92,9 +107,20 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def generic_resp(self, status, message, _meta = None):
 
+        """
+        Generic json parser 
+        """
+
         self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
         self.set_status(status)
         self.finish()
+
+    def get_self_url(self, route):
+        """
+        Returns absolute path to app, given a specific route
+        """
+
+        return self.request.protocol + "://" + self.request.host + route
 
 
 class UsersHandler(BaseHandler, UserDatabaseHandler):
@@ -360,7 +386,7 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         GET - gets list of products
         POST -- creates new product
     """
-
+    @tornado.web.asynchronous
     def get(self):
         """
         Get list of products 
@@ -401,6 +427,9 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         self.set_status(200)
         self.finish()
 
+
+    @tornado.web.asynchronous
+    @gen.coroutine
     def post(self):
         """
         Create new product 
@@ -409,7 +438,6 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
                 product_name
                 product_desc
                 category (optional)
-                seller -- uuid
                 price -- string
             'user' object with :
                 username
@@ -420,13 +448,55 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         Returns : 201 -- Created
                   403 -- Forbidden if authentication failed
                   500 -- Server Error
+                  400 -- Bad Request
         """
+        print self.response_codes
         authenticated = False
         sent_data = json.loads(self.request.body)
+        user_data = sent_data["user"]
+
+        # print "running"
 
         # implement cookie authentication
 
+        path = self.get_self_url("/auth?username=" + user_data["username"]+ "&password=" + user_data["password"]+ "&persist=0")
+        req = HTTPRequest(path, method = "GET")
+
+        resp = yield self.client.fetch(req)
+
         try:
+            authenticated = int(resp.body)
+        except Exception as e:
+            self.generic_resp(500, "Server Error", str(e))
+            return
+
+        if authenticated == 0:
+            self.generic_resp(403, "Forbidden", "Invalid Credentials")
+            return
+        try:
+            product_data = sent_data["product"]
+        except:
+            self.generic_resp(400, "Bad Request", "Data not parsed properly")
+            return
+
+        if not self.product_unique(product_data["product_name"]):
+            self.generic_resp(400, "This product name is already taken")
+            return
+
+        # validate fields here
+
+        parsed_product_data = product_data
+        parsed_product_data["seller"] = user_data["username"]
+
+        try:
+            success = self.create_product(parsed_product_data)
+            self.generic_resp(200, "Success", json.dumps(success))
+
+        except Exception as e:
+            self.generic_resp(500, "Server Error", str(e))
+
+
+
 
 
 
@@ -450,6 +520,7 @@ class AuthenticationHandler(BaseHandler, AuthDBHandler):
 
     sample request: www.base.py/auth?username=x&password=y?persist=1
     """
+    @tornado.web.asynchronous
     def get(self):
 
         username = self.get_query_argument("username", None)

@@ -25,3 +25,4 @@ SECRET_KEY = "super-secret"
 
 DEBUG = True
 
+# url for this site

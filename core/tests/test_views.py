@@ -322,6 +322,29 @@ class TestProductOperations(AsyncHTTPTestCase):
     def tearDown(self):
         metadata.drop_all()
 
+
+    def test_inserting_products(self):
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "konrad@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "wruumm",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        print resp.body
+
+
+
+
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
         engine = create_engine("sqlite:///:memory:")
@@ -371,7 +394,6 @@ class TestAuthentication(AsyncHTTPTestCase):
         self.assertEquals(0, int(res.body))
 
         res = self.fetch("/auth?username=konrad&password=deprofundis&persist=1", method = "GET" )
-        print res.body
 
 if __name__ == "__main__":
     tornado.testing.main()
