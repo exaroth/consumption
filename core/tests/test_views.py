@@ -328,7 +328,7 @@ class TestProductOperations(AsyncHTTPTestCase):
         data["user"] = dict(
             username = "konrad",
             password = "deprofundis",
-            email = "konrad@gmail.com"
+            email = "exaroth@gmail.com"
         )
         self.fetch("/users", method = "POST", body = json.dumps(data))
 
@@ -340,10 +340,146 @@ class TestProductOperations(AsyncHTTPTestCase):
             price = "120zl"
         )
         resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
-        print resp.body
+        self.assertEquals(201, resp.code)
+
+        sel = select([products])
+
+        res = self.conn.execute(sel).fetchall()
+        self.assertEquals(1, len(res))
+        self.assertIn("wiertarka", list(res[0]))
+        self.assertIn("konrad", list(res[0]))
+        self.assertIn("wruumm", list(res[0]))
 
 
 
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "telewizor",
+            product_desc = "pierdoly",
+            price = "1200zl",
+            category = "rtv"
+        )
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+
+        res = self.conn.execute(sel).fetchall()
+        self.assertEquals(2, len(res))
+
+        tv = list(res[1])
+        
+        self.assertIn("telewizor", tv)
+        self.assertIn("pierdoly", tv)
+        self.assertIn("1200zl", tv)
+        self.assertIn("rtv", tv)
+        self.assertIn("konrad", tv)
+
+        # test for wrong data
+
+        # invalid credentials
+
+
+        product_data = dict()
+        product_data["user"] = dict(username = "invalid", password = "deprofudnis")
+        product_data["product"] = dict(
+            product_name = "silly walk",
+            product_desc = "test",
+            price = "1zl",
+            category = "rtv"
+        )
+
+
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "invalid")
+        product_data["product"] = dict(
+            product_name = "silly walk",
+            product_desc = "test",
+            price = "1200pounds",
+            category = "rtv"
+        )
+
+        # invalid password
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(403, resp.code)
+        self.assertIn("Invalid Credentials", resp.body)
+
+        product_data = dict()
+        product_data["user"] = dict(username = "invalid", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "silly walk",
+            product_desc = "test",
+            price = "1200pounds",
+            category = "rtv"
+        )
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(403, resp.code)
+        self.assertIn("Invalid Credentials", resp.body)
+
+        #missing fields
+
+
+        product_data = dict()
+        product_data["product"] = dict(
+            product_name = "silly walk",
+            product_desc = "test",
+            price = "1200pounds",
+            category = "rtv"
+        )
+
+        # no user data
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(400, resp.code)
+        self.assertIn("not parsed properly", resp.body)
+
+        # no product data
+
+        product_data = dict()
+        product_data["user"] = dict(username = "invalid", password = "deprofundis")
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(400, resp.code)
+        self.assertIn("not parsed properly", resp.body)
+
+        # missing product fields
+
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_desc = "test",
+            price = "1200pounds",
+            category = "rtv"
+        )
+
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(400, resp.code)
+
+
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "silly walk",
+            product_desc = "test",
+            category = "rtv"
+        )
+
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(400, resp.code)
+
+        # not unique product name
+
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "test",
+            category = "rtv"
+        )
+
+
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(400, resp.code)
 
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):

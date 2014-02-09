@@ -90,6 +90,8 @@ class BaseHandler(tornado.web.RequestHandler):
             Forbidden = 403
         )
 
+        self.required_product_fields = ("product_name", "product_desc", "price")
+
     def initialize(self):
         pass
 
@@ -122,7 +124,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 "_meta" : "some_data"
             }
         """
-        message = "Unknown"
+        message = "Unknown_Message"
         for key, val in self.response_codes.items():
             if val == status_code:
                 message = key
@@ -209,7 +211,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         for field in ("username", "email", "password"):
             if field not in data.keys():
                 self.generic_resp(400, "Missing fields")
-                # return
+                return
         try:
             if not self.credentials_unique(data["username"], data["email"]):
                 self.generic_resp(400, "Username and password have to be unique")
@@ -466,10 +468,23 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
                   500 -- Server Error
                   400 -- Bad Request
         """
-        print self.response_codes
         authenticated = False
         sent_data = json.loads(self.request.body)
-        user_data = sent_data["user"]
+        # user_data = None
+        # product_data = None
+        try:
+            user_data = sent_data["user"]
+            product_data = sent_data["product"]
+        except:
+            self.generic_resp(400, "Data not parsed properly")
+            return
+        
+        product_data.setdefault("category", "Other")
+
+        for field in self.required_product_fields:
+            if field not in product_data.keys():
+                self.generic_resp(400, "Data not parsed properly")
+                return
 
         # print "running"
 
@@ -485,16 +500,10 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         except Exception as e:
             self.generic_resp(500, str(e))
             return
-
+        # print authenticated
         if authenticated == 0:
             self.generic_resp(403, "Invalid Credentials")
             return
-        try:
-            product_data = sent_data["product"]
-        except:
-            self.generic_resp(400, "Data not parsed properly")
-            return
-
         if not self.product_unique(product_data["product_name"]):
             self.generic_resp(400, "This product name is already taken")
             return
@@ -506,16 +515,12 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
 
         try:
             success = self.create_product(parsed_product_data)
-            self.generic_resp(200, json.dumps(success))
+            self.generic_resp(201, json.dumps(success))
+            return
 
         except Exception as e:
             self.generic_resp(500, str(e))
-
-
-
-
-
-
+            return
 
 
 
