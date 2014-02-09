@@ -124,7 +124,7 @@ class BaseDBHandler(object):
         result = self.conn.execute(sel).scalar()
         return result
 
-    def delete_row(self, column, value):
+    def delete_row(self,table, column, value):
         """
         Deletes row that matches value 
         
@@ -132,7 +132,7 @@ class BaseDBHandler(object):
         column -- sqlalchemy column to search in
         value -- value to match it against
         """
-        delete_q = users.delete().where(column == value)
+        delete_q = table.delete().where(column == value)
         self.conn.execute(delete_q)
 
 
@@ -303,7 +303,7 @@ class UserDatabaseHandler(BaseDBHandler):
             haystack = users.c.username
         trans = self.conn.begin()
         try:
-            self.delete_row(haystack, identifier)
+            self.delete_row(users, haystack, identifier)
             trans.commit()
         except:
             trans.rollback()
@@ -651,11 +651,15 @@ class ProductDatabaseHandler(BaseDBHandler):
 
 
 
-    def delete_product(self, uuid):
+    def delete_product(self, identifier, uuid = True):
         """
         Delete product with given uuid 
         """
-        self.delete_row(products.c.product_uuid, uuid)
+        if uuid:
+            haystack = products.c.product_uuid
+        else:
+            haystack = products.c.product_name
+        self.delete_row(products, haystack, identifier)
 
     def update_product(self, uuid, data):
         """

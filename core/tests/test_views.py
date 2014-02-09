@@ -772,6 +772,76 @@ class TestProductOperations(AsyncHTTPTestCase):
 
         self.assertEquals(404, resp.code)
 
+    def test_deleting_product(self):
+
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "exaroth@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "wruumm",
+            category = "All",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        res = self.fetch("/product?id=wiertarka&name=konrad&password=deprofundis", method = "DELETE")
+
+        self.assertEquals(201, res.code)
+        self.assertIn("Product deleted", res.body)
+
+        resp = self.fetch("/products")
+        self.assertNotIn("wiertarka", resp.body)
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "zmywarka",
+            product_desc = "szuruburu",
+            category = "agd",
+            price = "1200zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        res =  self.fetch("/products")
+        self.assertIn("zmywarka", res.body)
+
+        res = self.fetch("/product?id=wiertarka&name=konrad&password=deprofundis", method = "DELETE")
+
+        self.assertEquals(404, res.code)
+
+        res = self.fetch("/product?id=zmywarka&name=konrad&password=deprofundis", method = "DELETE")
+        res =  self.fetch("/products")
+        self.assertNotIn("zmywarka", res.body)
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "zmywarka",
+            product_desc = "szuruburu",
+            category = "agd",
+            price = "1200zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        # test for invalid credentials
+
+        res = self.fetch("/product?id=zmywarka&name=malgosia&password=deprofundis", method = "DELETE")
+        self.assertEquals(401, res.code)
+
+        res = self.fetch("/product?id=zmywarka&name=konrad&password=nieprawidlowy", method = "DELETE")
+        self.assertEquals(401, res.code)
+
+
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
         engine = create_engine("sqlite:///:memory:")

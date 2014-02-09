@@ -278,7 +278,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
     DELETE -- deletes user
     """
 
-
+    @tornado.web.asynchronous
     def authenticate_user(self, unique, password):
         """
         Basic authentication function 
@@ -294,7 +294,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         return authenticated
 
 
-
+    @tornado.web.asynchronous
     def get(self):
         """
         Return single user Information 
@@ -352,6 +352,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             self.generic_resp(500, str(e))
             return
 
+    @tornado.web.asynchronous
     def put(self):
         """
         Update user_information 
@@ -407,7 +408,6 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         except Exception as e:
             self.generic_resp(500, str(e))
             return
-
 
     def delete(self):
         """
@@ -563,7 +563,8 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
 
 class ProductHandler(BaseHandler, ProductDatabaseHandler):
 
-
+    @tornado.web.asynchronous
+    @gen.coroutine
     def get(self):
 
         """
@@ -629,6 +630,13 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
                 "password": "test"
             }
             }
+        
+        Returns:
+            404 -- product not found
+            400 -- Wrong data input (missing fields etc)
+            401 -- Authentication failed
+            500 -- Server Error
+            201 -- Updated
         """
 
         body = json.loads(self.request.body)
@@ -687,11 +695,76 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
             self.generic_resp(500, str(e))
             return
 
-
+    @gen.coroutine
     def delete(self):
-        pass
+
+        """
+        Delete given product
+        Sample request:
+            www.base.com/product?id=wiertarka&name=konrad&password=haslo&direct=0
+
+        query parameters:
+            id -- (required) identifier of the product
+            name -- (required) name of the owner
+            password -- (required) user_password
+            direct -- if 1 gets product by uuid else by name
+
+            id of the owner has to match 'seller' field in products table
+
+        """
+
+        product_identifier = self.get_query_argument("id", None)
+        username = self.get_query_argument("name", None)
+        password = self.get_query_argument("password", None)
+        direct = self.get_query_argument("direct", 0)
+        try:
+            direct = int(direct)
+        except:
+            direct = 0
+
+        if not username or not password or not product_identifier:
+            self.generic_resp(400, "Missing fields")
+            return
+
+        try:
+            authenticated = yield self.remote_auth(username, password, persist = 0)
+
+            try:
+                authenticated = int(authenticated)
+                if not authenticated:
+                    self.generic_resp(401, "Authentication Failed")
+                    return
+            except Exception as e:
+                self.generic_resp(500)
+                return
+
+            item_data = yield self.get_item_data(product_identifier, direct = direct)
+            item_data = json.loads(item_data)
+            if item_data["status"] != 200:
+                self.generic_resp(404, "Item Not Found")
+                return
+            item_data = item_data["product"]
+
+            if username != item_data["seller"]:
+                self.generic_resp(401, "Permission Denied")
+                return
+        except Exception as e:
+            self.generic_resp(500, str(e))
+            return
+
+        try:
+            self.delete_product(product_identifier, uuid = direct)
+            self.generic_resp(201, "Product deleted")
+            return
+
+        except Exception as e:
+            self.generic_resp(500, str(e))
+            return
 
 
+
+
+            
 
 
 
