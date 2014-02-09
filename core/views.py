@@ -105,14 +105,30 @@ class BaseHandler(tornado.web.RequestHandler):
                 return
 
 
-    def generic_resp(self, status, message, _meta = None):
+    def generic_resp(self, status_code, _meta = None):
 
         """
-        Generic json parser 
+        Generic json output parser
+        returns json containing status, response code,
+        and additional data if provided also sets up response status
+        of response
+        status -- (int) compares number given to dictionary
+        hof response codes if number not found sets message to unknown
+        _meta -- additional data to pass to response
+        sample output:
+            {
+                "status": 200,
+                "message": "OK",
+                "_meta" : "some_data"
+            }
         """
+        message = "Unknown"
+        for key, val in self.response_codes.items():
+            if val == status_code:
+                message = key
 
-        self.write(json.dumps(dict(status = status, message = message, _meta = _meta)))
-        self.set_status(status)
+        self.write(json.dumps(dict(status = status_code, message = message, _meta = _meta)))
+        self.set_status(status_code)
         self.finish()
 
     def get_self_url(self, route):
@@ -142,7 +158,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
             limit = self.get_query_argument("limit", 10)
             offset = self.get_query_argument("offset", 0)
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
         try:
             list_of_users = self.list_all_users(limit, offset, safe = True)
@@ -161,7 +177,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
             self.finish()
             return
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             self.finish()
             return
 
@@ -183,7 +199,7 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         """
 
         if not self.request.body:
-            self.generic_resp(404, "Not Found")
+            self.generic_resp(404)
         rec = json.loads(self.request.body)
         # Process data  -- remove whitespace
         # Validate data here
@@ -192,24 +208,24 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
         check = True
         for field in ("username", "email", "password"):
             if field not in data.keys():
-                self.generic_resp(400, "Bad Request", "Missing fields")
+                self.generic_resp(400, "Missing fields")
                 # return
         try:
             if not self.credentials_unique(data["username"], data["email"]):
-                self.generic_resp(400, "Bad Request", "Username and password have to be unique")
+                self.generic_resp(400, "Username and password have to be unique")
                 return
             data["password"] = generate_password_hash(data["password"])
             # TODO think abot parsing date
             data["joined"] = datetime.now().date()
             try:
                 id = self.create_user(data)
-                self.generic_resp(201, "Created")
+                self.generic_resp(201)
                 return
             except Exception as e:
-                self.generic_resp(500, "Server Error", str(e))
+                self.generic_resp(500, str(e))
                 return
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
 
 
@@ -272,7 +288,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
 
         visitor = True
         if not identifier:
-            self.generic_resp(404, "Not Found", "Missing uuid")
+            self.generic_resp(404, "Missing uuid")
             return
         if password:
             auth = self.authenticate_user(identifier, password)
@@ -282,7 +298,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
             # if authenticated
             user_data = self.get_user(identifier, safe = visitor, direct = direct)
             if not user_data:
-                self.generic_resp(404, "Not Found", "User doesnt exist")
+                self.generic_resp(404, "User doesnt exist")
                 return
             else:
                 result = dict()
@@ -294,7 +310,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
                 self.finish()
                 return
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
 
     def put(self):
@@ -327,11 +343,11 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         password = self.get_query_argument("password")
 
         if not username or not password:
-            self.generic_resp(403, "Forbidden")
+            self.generic_resp(403)
             return
         authenticated = self.authenticate_user(username, password)
         if not authenticated:
-            self.generic_resp(403, "Forbidden")
+            self.generic_resp(403)
             return
         data = self.request.body
         if not data or not "update" in json.loads(data).keys():
@@ -344,13 +360,13 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         try:
             updated = self.update_user(username, update_data, uuid = False)
             if not updated:
-                self.generic_resp(500, "Server Error")
+                self.generic_resp(500)
                 return
             else:
-                self.generic_resp(201, "Created", json.dumps(updated))
+                self.generic_resp(201, json.dumps(updated))
                 return
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
 
 
@@ -365,19 +381,19 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
         password = self.get_query_argument("password", None)
 
         if not id or not password:
-            self.generic_resp(403, "Forbidden")
+            self.generic_resp(403)
             return
         authenticated = self.authenticate_user(id, password)
         if not authenticated:
-            self.generic_resp(403, "Forbidden")
+            self.generic_resp(403)
             return
         else:
             try:
                 self.delete_user(id, uuid = False)
-                self.generic_resp(200, "OK")
+                self.generic_resp(200)
                 return
             except Exception as e:
-                self.generic_resp(500, "Server Error", str(e))
+                self.generic_resp(500, str(e))
                 return
 
 class ProductsHandler(BaseHandler, ProductDatabaseHandler):
@@ -411,7 +427,7 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
             number_of_products = self.get_number_of_products()
             product_list = self.get_product_list(limit, offset, category)
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
 
         list_of_products = dict()
@@ -467,16 +483,16 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         try:
             authenticated = int(resp.body)
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
             return
 
         if authenticated == 0:
-            self.generic_resp(403, "Forbidden", "Invalid Credentials")
+            self.generic_resp(403, "Invalid Credentials")
             return
         try:
             product_data = sent_data["product"]
         except:
-            self.generic_resp(400, "Bad Request", "Data not parsed properly")
+            self.generic_resp(400, "Data not parsed properly")
             return
 
         if not self.product_unique(product_data["product_name"]):
@@ -490,10 +506,10 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
 
         try:
             success = self.create_product(parsed_product_data)
-            self.generic_resp(200, "Success", json.dumps(success))
+            self.generic_resp(200, json.dumps(success))
 
         except Exception as e:
-            self.generic_resp(500, "Server Error", str(e))
+            self.generic_resp(500, str(e))
 
 
 
@@ -528,7 +544,7 @@ class AuthenticationHandler(BaseHandler, AuthDBHandler):
         persist = self.get_query_argument("persist", False)
 
         if not username or not password:
-            self.generic_resp(403, "Forbidden", "username and password are required")
+            self.generic_resp(403, "username and password are required")
             return
 
         try:
@@ -539,7 +555,7 @@ class AuthenticationHandler(BaseHandler, AuthDBHandler):
         try:
             hash = self.get_password(username, uuid = False)
         except:
-            self.generic_resp(500, "Server Error")
+            self.generic_resp(500)
             return
 
         authenticated = check_password_hash(password, hash)

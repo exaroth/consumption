@@ -171,7 +171,7 @@ class TestUserOperations(AsyncHTTPTestCase):
         nonexistent = str(uuid.uuid4())
         res = self.fetch("/user?id="+nonexistent, method = "GET")
         self.assertEquals(404, res.code)
-        self.assertIn("Not Found", res.body)
+        self.assertIn("Not_Found", res.body)
         # test getting information on authenticated user
         user_data = self.fetch("/user?id=konrad&password=deprofundis&direct=1", method = "GET")
         self.assertEquals(user_data.code, 200)
