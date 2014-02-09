@@ -58,6 +58,7 @@ class Application(tornado.web.Application):
             (r"/users", UsersHandler),
             (r"/user", UserHandler),
             (r"/products", ProductsHandler),
+            (r"/product", ProductHandler),
             (r"/auth", AuthenticationHandler)
         ]
         settings = {
@@ -140,9 +141,35 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return self.request.protocol + "://" + self.request.host + route
 
+    @tornado.web.asynchronous
+    def remote_auth(self, username, password, persist = 0):
+
+        """
+        Simple handler for user authentication 
+        persist -- (int) 1 or 0
+
+        Returns 1 if auth ok or 0 if not
+        if persist is 1 returns secure cookie
+        """
+
+        return self.request.protocol + "://" + self.request.host\
+                + "/auth?username=" + username + "&password=" + password\
+                + "&persist=" + persist
+
+    @tornado.web.asynchronous
+    def get_item_data(self, identifier, direct = 0):
+        """
+        Returns item information
+        if direct == 1 looks by product_uuid
+        """
+
+        return self.request.protocol + "://" + self.request.host\
+                + "/product?id=" + identifier + "&direct=" + direct
+
 
 class UsersHandler(BaseHandler, UserDatabaseHandler):
-
+    
+    @tornado.web.asynchronous
     def get(self):
 
         """
@@ -182,7 +209,8 @@ class UsersHandler(BaseHandler, UserDatabaseHandler):
             self.generic_resp(500, str(e))
             self.finish()
             return
-
+    
+    @tornado.web.asynchronous
     def post(self):
         """
         Create new user,
@@ -437,7 +465,7 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         list_of_products["_metadata"]["limit"] = limit
         list_of_products["_metadata"]["offset"] = offset
         list_of_products["_metadata"]["total"] = number_of_products
-        list_of_products["_metadata"]["category"] = category or "All"
+        # list_of_products["_metadata"]["category"] = category or "All"
         list_of_products["products"] = product_list
         list_of_products["status"] = 200
         list_of_products["message"] = "OK"
@@ -467,6 +495,8 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
                   403 -- Forbidden if authentication failed
                   500 -- Server Error
                   400 -- Bad Request
+
+                  TODO parse inserted data
         """
         authenticated = False
         sent_data = json.loads(self.request.body)
@@ -521,6 +551,106 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
         except Exception as e:
             self.generic_resp(500, str(e))
             return
+
+class ProductHandler(BaseHandler, ProductDatabaseHandler):
+
+
+    def get(self):
+
+        """
+        Get single product info 
+
+        sample request: www.base.com/product?id=xdirect=1
+        id -- unique product identifier name or uuid
+        direct -- if set to 1 looks by uuid if 0 by name
+        """
+
+        identifier = self.get_query_argument("id", None)
+        if not identifier:
+            self.generic_resp(404)
+            return
+
+        direct = self.get_query_argument("direct", False)
+
+        try:
+            direct = bool(int(direct))
+        except:
+            direct = False
+        try:
+
+            res = self.get_product(identifier, direct)
+            if not res:
+                self.generic_resp(404)
+                return
+
+            resp = dict()
+            resp["product"] = res
+            resp["status"] = 200
+            resp["mesasage"] = "OK"
+
+            self.write(json.dumps(resp))
+            self.set_status(200)
+            return
+        except Exception as e:
+            self.generic_resp(500, str(e))
+            self.finish()
+
+    @tornado.web.asynchronous
+    @gen.coroutine
+    def put(self):
+
+        """
+        Update product information
+        requires body containing user data and product data
+
+        only fields in CUSTOM_USER_FIELDS in config.py
+        are permitted all the others are discarded
+        returns json file containing data that has been updated
+        """
+
+        body = json.dumps(self.request.body)
+        if not body:
+            self.generic_resp(400, "No information given")
+            return
+
+        try:
+            user_data = body["user"]
+            product_data = body["update"]
+        except:
+            self.generic_resp(400, "Data not parsed properly")
+            return
+    
+        try:
+            authenticated = int(self.remote_auth(user_data["username"], user_data["password"]))
+            if not authenticated:
+                self.generic_resp(401, "Authentication failed")
+            full_product_data = self.get_item_data(product_data["product_name"], direct = 0)
+            if full_product_data["seller"] != user_data["username"]:
+                self.generic_resp(401, "You dont have permission to update this item")
+                return
+        except:
+            self.generic_resp(500)
+            return
+
+        try:
+            result = self.update_product(product_data)
+            resp = dict()
+            dict["status"] = 201
+            dict["message"] = "Created"
+            dict["updated"] = result
+            self.write(json.dumps(resp))
+            self.set_status(201)
+            self.finish()
+            return
+        except Exception as e:
+            self.generic_resp(500, str(e))
+            return
+
+
+    def delete(self):
+        pass
+
+
 
 
 

@@ -639,11 +639,15 @@ class ProductDatabaseHandler(BaseDBHandler):
             raise
 
 
-    def get_product(self, uuid):
+    def get_product(self, identifier, uuid = True):
         """
         Get product with given uuid 
         """
-        return self.get_row(products, products.c.product_uuid, uuid)
+        if uuid:
+            haystack = products.c.product_uuid
+        else:
+            haystack = products.c.product_name
+        return self.get_row(products, haystack, identifier, PRODUCT_FIELDS)
 
 
 
