@@ -615,6 +615,20 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
         only fields in CUSTOM_USER_FIELDS in config.py
         are permitted all the others are discarded
         returns json file containing data that has been updated
+
+        sample update json :
+            {
+            "update": {
+                "product_name": "wiertarka", --- required for getting uuid
+                "product_desc": "jakas wiertarka",
+                "price": "120zl"
+
+            }
+            "user": {
+                "username": "konrad",
+                "password": "test"
+            }
+            }
         """
 
         body = json.loads(self.request.body)
@@ -630,25 +644,41 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
             return
     
         try:
-            authenticated = yield self.remote_auth(user_data["username"], user_data["password"])
-            print authenticated
+            try:
+                # authenticate user
+                authenticated = yield\
+                        self.remote_auth(user_data["username"], user_data["password"])
+                authenticated = int(authenticated)
+            except Exception as e:
+                self.generic_resp(500, str(e))
+                return
+
+
             if not authenticated:
                 self.generic_resp(401, "Authentication failed")
-            # full_product_data = self.get_item_data(product_data["product_name"], direct = 0)
-            # print full_product_data
-            # if full_product_data["seller"] != user_data["username"]:
-            #     self.generic_resp(401, "You dont have permission to update this item")
-            #     return
+                return
+            
+            # get full product info
+            try:
+                full_product_data = yield\
+                        self.get_item_data(product_data["product_name"], direct = 0)
+                full_product_data = json.loads(full_product_data)["product"]
+                if full_product_data["seller"] != user_data["username"]:
+                    self.generic_resp(401, "You dont have permission to update this item")
+                    return
+            except Exception as e:
+                self.generic_resp(404)
+                return
         except Exception as e:
             self.generic_resp(500, str(e))
             return
 
         try:
-            result = self.update_product(product_data)
+            result = self.update_product(full_product_data["uuid"], product_data)
             resp = dict()
-            dict["status"] = 201
-            dict["message"] = "Created"
-            dict["updated"] = result
+            resp["status"] = 201
+            resp["message"] = "Created"
+            resp["updated"] = result
             self.write(json.dumps(resp))
             self.set_status(201)
             self.finish()
@@ -672,13 +702,7 @@ class AuthenticationHandler(BaseHandler, AuthDBHandler):
     implements only get method and is meant to be used 
     by async http client on backend side
     expects following query parameters:
-        username
-        password
-        persist -- (optional) if set to 1 returns
-                    encrypted cookie to be saved in the browser
-                    if 0 returns 1 if succesfully authenticated
-                    or 0 if not
-
+        username password persist -- (optional) if set to 1 returns encrypted cookie to be saved in the browser if 0 returns 1 if succesfully authenticated or 0 if not 
 
     sample request: www.base.py/auth?username=x&password=y?persist=1
     """

@@ -631,7 +631,7 @@ class TestProductOperations(AsyncHTTPTestCase):
 
 
 
-    def tedating_product(self):
+    def test_updating_product(self):
         data = dict()
         data["user"] = dict(
             username = "konrad",
@@ -656,37 +656,121 @@ class TestProductOperations(AsyncHTTPTestCase):
             password = "deprofundis"
         )
         data["update"] = dict(
-            product_desc = "depro"
+            product_name = "wiertarka",
+            product_desc = "updated"
         )
 
         resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
-        print resp.body
 
-    # def test_testing(self):
-    #     data = dict()
-    #     data["user"] = dict(
-    #         username = "konrad",
-    #         password = "deprofundis",
-    #         email = "exaroth@gmail.com"
-    #     )
-    #     self.fetch("/users", method = "POST", body = json.dumps(data))
-    #     print "xdeprofundis clamo ad te domien"
+        self.assertEquals(201, resp.code)
+        self.assertIn("updated", resp.body)
+        self.assertIn("wiertarka", resp.body)
 
-    #     x = self.fetch("/test", method = "GET")
-    #     print x.body
+        # add another item
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "pralkosuszarka",
+            product_desc = "pierze i suszy",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+        data = dict()
+
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis"
+        )
+        data["update"] = dict(
+            product_name = "pralkosuszarka",
+            price = "50zl"
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(201, resp.code)
+        self.assertIn("50zl", resp.body)
+
+        sel = select([products.c.price]).where(products.c.product_name == "pralkosuszarka")
+        res = self.conn.execute(sel).scalar()
+        self.assertEquals("50zl", res)
+
+        sel = select([products.c.product_desc]).where(products.c.product_name == "wiertarka")
+        res = self.conn.execute(sel).scalar()
+        self.assertEquals("updated", res)
+
+        # test for invalid credentials
+
+        data["user"] = dict(
+            username = "konrad",
+            password = "niewlasciwy"
+        )
+        data["update"] = dict(
+            product_name = "pralkosuszarka",
+            price = "50zl"
+        )
+
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(401, resp.code)
 
 
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["update"] = dict(
+            product_name = "pralkosuszarka",
+            price = "50zl"
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(401, resp.code)
+
+        # test for no product data given
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis"
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(400, resp.code)
+        data = dict()
+        data["update"] = dict(
+            product_name = "pralkosuszarka",
+            price = "50zl"
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(400, resp.code)
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis"
+        )
+        data["update"] = dict(
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
+
+        self.assertEquals(404, resp.code)
 
 
+        # test for non existent
+        data = dict()
 
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis"
+        )
+        data["update"] = dict(
+            product_name = "wiertarkopralkosuszarka",
+            price = "50zl"
+        )
+        resp = self.fetch("/product", method = "PUT", body = json.dumps(data))
 
-
-
-
-
-
-
-
+        self.assertEquals(404, resp.code)
 
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
