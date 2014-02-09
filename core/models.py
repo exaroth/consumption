@@ -35,8 +35,9 @@ bought_products = Table("bought_products", metadata,
 products = Table("products", metadata,
                   Column("product_id", Integer, primary_key = True),
                   Column("product_uuid", String, nullable = False),
-                  Column("product_name", Unicode(40), nullable = False),
-                  Column("product_desc", Unicode),
+                  Column("product_name", String(40), nullable = False),
+                  Column("product_desc", String),
+                  Column("category", String(40)),
                   UniqueConstraint("product_uuid", "product_name")
                 )
 

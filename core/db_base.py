@@ -82,7 +82,7 @@ class BaseDBHandler(object):
             if result == 0:
                 return sample_uuid
     
-    def get_row(self, column, uuid, field_tuple):
+    def get_row(self,table, column, uuid, field_tuple):
         """
         Returns dictionary containg single row data returned from db
         
@@ -91,7 +91,7 @@ class BaseDBHandler(object):
         uuid -- unique uuid (str)
         field_tuple - iterable containing fields to parse dictionary against (list/tuple)
         """
-        sel = select([users]).where(column == uuid)
+        sel = select([table]).where(column == uuid)
         q = self.conn.execute(sel).fetchone()
         if not q:
             return dict()
@@ -282,11 +282,11 @@ class UserDatabaseHandler(BaseDBHandler):
             if not self.check_exists(haystack, identifier):
                 return dict()
             if safe:
-                res = self.get_row(haystack, identifier, USER_FIELDS)
+                res = self.get_row(users, haystack, identifier, USER_FIELDS)
                 for field in SECURE_USER_FIELDS:
                     del res[field]
                 return res
-            return self.get_row(haystack, identifier, USER_FIELDS)
+            return self.get_row(users, haystack, identifier, USER_FIELDS)
         except:
             raise
 
@@ -534,7 +534,11 @@ class ProductDatabaseHandler(BaseDBHandler):
         """
         Generates unique product uuid 
         """
-        return self.generate_unique_uuid(products.c.product_uuid)
+        try:
+            res = self.generate_unique_uuid(products.c.product_uuid)
+            return res
+        except:
+            raise
 
     # not needed
     # def product_exists(self, uuid):
@@ -551,7 +555,11 @@ class ProductDatabaseHandler(BaseDBHandler):
             raise Exception("No product_name given")
 
         sel = select([exists().where(products.c.product_name == name)])
-        return not self.conn.execute(sel).scalar()
+        try:
+            res = self.conn.execute(sel).scalar()
+            return not res
+        except:
+            raise
 
 
 
@@ -567,6 +575,8 @@ class ProductDatabaseHandler(BaseDBHandler):
        all additional keys all discarded
        """
        els_to_insert = dict()
+       if "category" not in data.keys():
+           data["category"] = None
        for key, value in data.items():
            if key in PRODUCT_FIELDS:
                els_to_insert[key] = value
@@ -575,8 +585,15 @@ class ProductDatabaseHandler(BaseDBHandler):
                raise Exception("Data not parsed properly, missing {0}".format(field))
        els_to_insert["product_uuid"] = els_to_insert["uuid"]
        del els_to_insert["uuid"]
-       res = self.conn.execute(products.insert().values(**els_to_insert))
-       return res.inserted_primary_key[0]
+       trans = self.conn.begin()
+       try:
+           res = self.conn.execute(products.insert().values(**els_to_insert))
+           trans.commit()
+           return res.inserted_primary_key[0]
+       except Exception as e:
+           trans.rollback()
+           logging.error(e)
+           raise
 
     def create_product(self, data):
        """
@@ -594,10 +611,15 @@ class ProductDatabaseHandler(BaseDBHandler):
        See save_product, product_unique and generate_product_uuid 
        for more info
        """
-       unique = self.product_unique(data["product_name"])
-       if not unique:
-           raise IntegrityError("Product name must be unique", data["product_name"], "create_product")
-       product_uuid = self.generate_product_uuid()
+       # put authentication in controller
+       # unique = self.product_unique(data["product_name"])
+       # if not unique:
+       #     raise IntegrityError("Product name must be unique", data["product_name"], "create_product")
+       try:
+           product_uuid = self.generate_product_uuid()
+       except:
+           raise
+           return
        data["uuid"] = product_uuid
        try:
            res = self.save_product(data)
@@ -605,12 +627,23 @@ class ProductDatabaseHandler(BaseDBHandler):
        except:
            raise
 
+    def get_number_of_products(self):
+        """
+        Get total number of products 
+        """
+        sel = select([func.count(products.c.product_id)])
+        try:
+            res = self.conn.execute(sel).scalar()
+            return res
+        except:
+            raise
+
 
     def get_product(self, uuid):
         """
         Get product with given uuid 
         """
-        return self.get_row(products.c.product_uuid, uuid)
+        return self.get_row(products, products.c.product_uuid, uuid)
 
 
 
@@ -636,18 +669,28 @@ class ProductDatabaseHandler(BaseDBHandler):
             if key in CUSTOM_PRODUCT_FIELDS:
                 items_to_update[key] = value
         update_q = products.update().where(products.c.product_uuid == uuid).values(**items_to_update)
-        self.conn.execute(update_q)
+        res = self.conn.execute(update_q)
+        return res.last_updated_params()
 
 
-    def get_product_list(self, limit, offset):
+    def get_product_list(self, limit, offset, category = None):
         """
         Get a dictionary of products returned from db 
         Returns: dict
         
         Keyword Arguments:
         limit, offset -- int
+        category -- (optional) limits query to given category
 
         """
+        # more specific
+        if category:
+            sel = select([products])\
+            .where(products.c.category == category)\
+                    .limit(limit)\
+                    .offset(offset)
+            res = self.conn.execute(sel).fetchall()
+            return self.parse_list_query_data(res, PRODUCT_FIELDS)
         return self.get_all_rows(products, PRODUCT_FIELDS, limit, offset)
 
     def get_top_selling_products(self, limit=10):

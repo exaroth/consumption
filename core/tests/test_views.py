@@ -306,6 +306,11 @@ class TestUserOperations(AsyncHTTPTestCase):
         resp = self.fetch("/user?id=malgosia", method = "DELETE")
         self.assertEquals(403, resp.code )
 
+        resp = self.fetch("/user", method = "DELETE")
+        self.assertEquals(403, resp.code )
+
+
+
 class TestProductOperations(AsyncHTTPTestCase):
 
     def get_app(self):
@@ -318,7 +323,6 @@ class TestProductOperations(AsyncHTTPTestCase):
     def tearDown(self):
         metadata.drop_all()
 
-        
         
 
 if __name__ == "__main__":
