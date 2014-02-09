@@ -189,7 +189,7 @@ class TestProductsDB(unittest.TestCase):
 
     def test_saving_a_product(self):
 
-        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt", category = "all" )
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt", category = "all", seller = "konrad", price = "30$" )
 
         inserted_id = self.product_handler.save_product(data)
         self.assertEquals(1, inserted_id)
@@ -201,7 +201,7 @@ class TestProductsDB(unittest.TestCase):
 
         pr_uuid = str(uuid.uuid4())
 
-        data = dict(uuid = pr_uuid, product_name = u"nowy2", product_desc = u"drugi nowy produkt", category = "all" )
+        data = dict(uuid = pr_uuid, product_name = u"nowy2", product_desc = u"drugi nowy produkt", category = "all", seller = "konrad", price = "30$" )
         inserted_id = self.product_handler.save_product(data)
         self.assertEquals(2, inserted_id)
 
@@ -216,27 +216,27 @@ class TestProductsDB(unittest.TestCase):
 
         # missing fields
 
-        data = dict(product_name = u"nowy3", product_desc = u"trzeci", category = "all")
+        data = dict(product_name = u"nowy3", product_desc = u"trzeci", category = "all", seller = "konrad", price = "30$")
         self.assertRaises(lambda: self.product_handler.save_product(data))
 
-        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy4", category = "all")
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy4", category = "all", seller = "konrad", price = "30$")
         self.assertRaises(lambda: self.product_handler.save_product(data))
         # not unique
 
 
 
         # TODO integrity error not risen, even though it says so
-        data = dict(uuid = pr_uuid, product_name = u"nowy5", product_desc = u"random", category = "all")
+        data = dict(uuid = pr_uuid, product_name = u"nowy5", product_desc = u"random", category = "all", seller = "konrad", price = "30$")
         self.assertRaises(self.product_handler.save_product(data))
         sel = select([products])
         # print self.conn.execute(sel).fetchall()
                 
         # TODO unique contraint not working natively (probably because of sqlite)
-        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"t", category = "all")
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"t", category = "all", seller = "konrad", price = "30$")
         self.product_handler.save_product(data)
     def test_checking_if_product_unique(self):
 
-        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt", category = "all" )
+        data = dict(uuid = str(uuid.uuid4()), product_name = u"nowy", product_desc = u"nowy produkt", category = "all", seller = "konrad", price = "30$" )
         self.product_handler.save_product(data)
 
         self.assertFalse(self.product_handler.product_unique(u"nowy"))
@@ -244,7 +244,7 @@ class TestProductsDB(unittest.TestCase):
         self.assertTrue(self.product_handler.product_unique(u"nowy_2"))
 
     def test_create_product_wrapper(self):
-        data = dict(product_name = u"inserted", product_desc = u"sample", category = "all")
+        data = dict(product_name = u"inserted", product_desc = u"sample", category = "all", seller = "konrad", price = "30$")
         product_id = self.product_handler.create_product(data)
         self.assertEquals(1, product_id)
         sel = select([products])
@@ -253,7 +253,7 @@ class TestProductsDB(unittest.TestCase):
         new_product = res[0]
         self.assertEquals(u"inserted", new_product[2])
 
-        data = dict(product_name = u"inserted2", product_desc = u"sample", category = "all")
+        data = dict(product_name = u"inserted2", product_desc = u"sample", category = "all", seller = "konrad", price = "30$")
         product_id2 = lambda: self.product_handler.create_product(data)
         self.assertEquals(product_id2(), 2)
         sel = select([products])
@@ -266,7 +266,7 @@ class TestProductsDB(unittest.TestCase):
 
         # test wrong data insertions
 
-        data = dict(product_name = u"inserted", product_desc = u"x", category = "all")
+        data = dict(product_name = u"inserted", product_desc = u"x", category = "all", seller = "konrad", price = "30$")
         self.assertRaises(lambda : self.product_handler.create_product(data))
         sel = select([products])
         res = tuple(self.conn.execute(sel)) # wrapper used to prevent locking the table
@@ -275,7 +275,7 @@ class TestProductsDB(unittest.TestCase):
 
         # test with too many arguments
 
-        data = dict(product_name = u"deprofundis", product_desc = u"error", category = "all",  random_arg = 10)
+        data = dict(product_name = u"deprofundis", product_desc = u"error", category = "all", seller = "konrad", price = "30$",  random_arg = 10)
         ins = self.product_handler.create_product(data)
         self.assertEquals(3, ins)
 
@@ -287,18 +287,18 @@ class TestProductsDB(unittest.TestCase):
 
     def test_getting_top_products(self):
 
-        data = dict(product_name = u"wiertarka", product_desc = u"test", category = "all")
+        data = dict(product_name = u"wiertarka", product_desc = u"test", category = "all", seller = "konrad", price = "30$")
         p1 = self.product_handler.create_product(data)
 
-        data = dict(product_name = u"suszarka", product_desc = u"test", category = "all")
+        data = dict(product_name = u"suszarka", product_desc = u"test", category = "all", seller = "konrad", price = "30$")
         p2 = self.product_handler.create_product(data)
         
 
-        data = dict(product_name = u"miotla", product_desc = u"test", category = "all")
+        data = dict(product_name = u"miotla", product_desc = u"test", category = "all", seller = "konrad", price = "30$")
         p3 = self.product_handler.create_product(data)
-        data = dict(product_name = u"walek", product_desc = u"test", category = "all")
+        data = dict(product_name = u"walek", product_desc = u"test", category = "all", seller = "konrad", price = "30$")
         p4 = self.product_handler.create_product(data)
-        data = dict(product_name = u"pralkosuszarka", product_desc = u"test", category = "all")
+        data = dict(product_name = u"pralkosuszarka", product_desc = u"test", category = "all", seller = "konrad", price = "30$")
         p5 = self.product_handler.create_product(data)
 
         self.user_handler = UserDatabaseHandler(conn = self.conn)

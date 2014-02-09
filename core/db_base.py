@@ -736,3 +736,30 @@ class ProductDatabaseHandler(BaseDBHandler):
         sel = select([products])
         return self.parse_list_query_data(self.conn.execute(sel), PRODUCT_FIELDS, "product_name")
 
+class AuthDBHandler(object):
+    """
+    Simple class implementing methods
+    related to authenticating users 
+    """
+
+    def get_password(self, username, uuid = True):
+        """
+        Returns hashed password for given identifier
+        if uuid is True looks by uuid 
+        else looks by username
+        """
+        if uuid:
+            haystack = users.c.user_uuid
+        else:
+            haystack = users.c.username
+
+        sel = select([users.c.password]).where(haystack == username)
+        try:
+            res = self.conn.execute(sel).scalar()
+            if res:
+                return res
+            return False
+        except:
+            raise
+
+

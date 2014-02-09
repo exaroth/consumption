@@ -63,8 +63,7 @@ class TestUserOperations(AsyncHTTPTestCase):
         data["user"] = dict(
             username = u"malgosia",
             password = "malgosia",
-            email = "malgosia2@gmail.com"
-        )
+            email = "malgosia2@gmail.com")
 
 
         resp = self.fetch("/users", method = "POST", body = json.dumps(data))
@@ -323,7 +322,56 @@ class TestProductOperations(AsyncHTTPTestCase):
     def tearDown(self):
         metadata.drop_all()
 
-        
+class TestAuthentication(AsyncHTTPTestCase):
+    def get_app(self):
+        engine = create_engine("sqlite:///:memory:")
+        metadata.bind = engine
+        self.conn = engine.connect()
+        metadata.create_all()
+        return Application(self.conn)
+
+    def tearDown(self):
+        metadata.drop_all()
+
+    def test_auth_function(self):
+        data = dict()
+        data["user"] = dict(
+            username = u"konrad",
+            password = "deprofundis",
+            email = "konrad@gmail.com"
+        )
+
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        res = self.fetch("/users")
+
+        res = self.fetch("/auth?username=konrad&password=deprofundis", method = "GET" )
+
+        self.assertEquals(200, res.code)
+        self.assertEquals(1, int(res.body))
+
+        res = self.fetch("/auth?username=malgosia&password=malgosia", method = "GET" )
+
+        self.assertEquals(200, res.code)
+        self.assertEquals(1, int(res.body))
+
+        res = self.fetch("/auth?username=nonexistent&password=test", method = "GET" )
+        self.assertEquals(200, res.code)
+        self.assertEquals(0, int(res.body))
+
+        res = self.fetch("/auth?username=konrad&password=test", method = "GET" )
+        self.assertEquals(200, res.code)
+        self.assertEquals(0, int(res.body))
+
+        res = self.fetch("/auth?username=konrad&password=deprofundis&persist=1", method = "GET" )
+        print res.body
 
 if __name__ == "__main__":
     tornado.testing.main()

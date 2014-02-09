@@ -24,21 +24,24 @@ bought_products = Table("bought_products", metadata,
                         Column("user_id", Integer, ForeignKey("users.user_id", ondelete="CASCADE")),
                         Column("product_id", Integer, ForeignKey("products.product_id", ondelete="CASCADE")),
 
-                       # option for postgresql db
-                       #  ForeignKeyConstraint(
-                       #      ["user_id", "product_id"],
-                       #      ["users.user_id", "products.product_id"],
-                       #      on_update="CASCADE", on_delete="CASCADE"
-                       #  )
+                        # option for postgresql db
+                        #  ForeignKeyConstraint(
+                        #      ["user_id", "product_id"],
+                        #      ["users.user_id", "products.product_id"],
+                        #      on_update="CASCADE", on_delete="CASCADE"
+                        #  )
                        )
 
 products = Table("products", metadata,
-                  Column("product_id", Integer, primary_key = True),
-                  Column("product_uuid", String, nullable = False),
-                  Column("product_name", String(40), nullable = False),
-                  Column("product_desc", String),
-                  Column("category", String(40)),
-                  UniqueConstraint("product_uuid", "product_name")
+                 Column("product_id", Integer, primary_key = True),
+                 Column("product_uuid", String, nullable = False),
+                 Column("product_name", String(40), nullable = False),
+                 Column("product_desc", String),
+                 Column("category", String(40)),
+                 Column("price", String),
+                 # Column("seller", ForeignKey("users.user_id")),
+                 Column("seller", String(30)),
+                 UniqueConstraint("product_uuid", "product_name")
                 )
 
 """

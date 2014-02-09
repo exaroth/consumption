@@ -15,9 +15,9 @@ CUSTOM_USER_FIELDS = ("password", "email" )
 SECURE_USER_FIELDS = ("password", "email", "uuid")
 
 #all product fields
-PRODUCT_FIELDS = ("uuid", "product_name", "product_desc", "category" )
+PRODUCT_FIELDS = ("uuid", "product_name", "product_desc", "category", "price", "seller" )
 # product fields that can be customized
-CUSTOM_PRODUCT_FIELDS = ("product_name", "product_desc", "category")
+CUSTOM_PRODUCT_FIELDS = ("product_name", "product_desc", "category", "price")
 
 
 # unique secret key used for encrypting passwords

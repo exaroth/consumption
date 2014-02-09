@@ -18,3 +18,20 @@ def check_password_hash(password, signature):
 
     return signature == generate_password_hash(password)
 
+def generate_secure_cookie(username):
+    """
+    NOTE: this cookie is not at all secure
+    generates cookie based on username and secret_key
+    """
+
+    return hashlib.sha1(username + ";session;" + SECRET_KEY).hexdigest()
+
+def check_secure_cookie(cookie, username):
+    """
+    Validates the cookie 
+    """
+
+    return cookie == generate_secure_cookie(username)
+
+
+
