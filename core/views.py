@@ -107,12 +107,12 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         # AJAX check
         # disabled for production
-        if not DEBUG:
-            if not "X-Requested-With" in self.request.headers or\
-               self.request.headers["X-Requested-With"] != "XMLHttpRequest":
-                self.set_status(404)
-                self.finish()
-                return
+        # if not DEBUG:
+        #     if not "X-Requested-With" in self.request.headers or\
+        #        self.request.headers["X-Requested-With"] != "XMLHttpRequest":
+        #         self.set_status(404)
+        #         self.finish()
+        #         return
 
 
     def generic_resp(self, status_code, _meta = None):

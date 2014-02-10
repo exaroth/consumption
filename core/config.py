@@ -24,6 +24,6 @@ CUSTOM_PRODUCT_FIELDS = ("product_name", "product_desc", "category", "price")
 # unique secret key used for encrypting passwords
 SECRET_KEY = "super-secret"
 
-DEBUG = True
+DEBUG = False
 
 # url for this site
