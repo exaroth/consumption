@@ -11,14 +11,14 @@ nicely parses JSON response.
 
 NOTE: requires Virtualenv and pip
 
-to install
+To install:
 
 ``` shell
 pip install virtualenv
 //if not installed
-mkdir folder_name
-virtualenv folder_name
-cd folder_name
+git clone https://github.com/exaroth/consumption.git
+virtualenv create consumption
+cd consumption
 source bin/activate
 pip install -r requirements.txt
 ```
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 First set database connection in core/config.py
 it uses SQLite database by default
 
-next create db
+Next create db:
 
 ``` shell
 python create_db.py
@@ -60,7 +60,7 @@ Consumption provides 2 base adresses for interacting with user accounts:
         -- GET method fetches a list of users
 		also you can set up limit and offset for easy pagination
 		example query:
-		/users?limit=10&offset=15
+		:: /users?limit=10&offset=15
 		also returns _metadata object containing current offset limit and total number of users
 	   -- POST creates new user requires properly parsed JSON file eg.
 	   ``` json
