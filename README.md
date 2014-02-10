@@ -56,25 +56,32 @@ To change it uncomment proper lines in views.py
 
 Consumption provides 2 base adresses for interacting with user accounts:
 
-/users 
-        -- GET method fetches a list of users
-		also you can set up limit and offset for easy pagination
-		example query:
-		:: /users?limit=10&offset=15
-		also returns _metadata object containing current offset limit and total number of users
-	   -- POST creates new user requires properly parsed JSON file eg.
-	   ``` json
-		{
-		"users": {
-		"username": "konrad",
-		"password": "test",
-		"email": "konrad@gmail.com"
-		}
-	} 
-	``` json
-	-- behind the scenes it hashes the password, creates unique user_uuid key, checks for uniqueness and parses input values -- Returns code 201 if succesful
+##### /users 
 
-/user
+
+    -- GET method fetches a list of users
+	also you can set up limit and offset for easy pagination
+	example query:
+	:: /users?limit=10&offset=15
+	also returns _metadata object containing current offset limit and total number of users
+
+
+
+   -- POST creates new user requires properly parsed JSON file eg.
+   ``` json
+	{
+	"users": {
+	"username": "konrad",
+	"password": "test",
+	"email": "konrad@gmail.com"
+	}
+} 
+``` json
+-- behind the scenes it hashes the password, creates unique user_uuid key, checks for uniqueness and parses input values -- Returns code 201 if succesful
+
+##### /user
+
+
 --GET - get single user information, by default it uses uuid to check for match
 	 - this can be changed by providing direct=0 parameter in query,
 	 aswell as password value, if username and password are verified returns 
@@ -83,6 +90,7 @@ Consumption provides 2 base adresses for interacting with user accounts:
 	 /user?id=konrad&direct=0 -- returns globally visible info
 	 /user?id=konrad&password=test&direct=0 -- returns detailed info
 	 /user?id=16fd2706-8baf-433b-82eb-8c7fada847da -- gets user by uuid
+
 
 --PUT - updates user information requires proper username and password in query string 
 along with data to update (this should be changed tbh), body JSON file shoucl look
@@ -96,14 +104,16 @@ query /user?username=x&password=y
 	}
 }
 ```
-only fields specified in CUSTOM_USER_FIELDS can be changed
-returns code 201 if succesful
+Only fields specified in CUSTOM_USER_FIELDS can be changed
+returns code 201 if succesfull
+
+
 -- DELETE -- deletes the user requires only proper username and password,
 sample query : /user?id=x&password=y
 
 #### Product Interaction
 
-/products
+##### /products
  -- similarly to /users implements methods for creating new product and getting product list
 
 
@@ -111,8 +121,12 @@ sample query : /user?id=x&password=y
  	/products -- returns first 10 items
  	/products?limit=10&offset=20 -- limits to 10 and offset 20
 
+
+
  --POST -- creates a new product, only users with existing account can do that
  		requires JSON file containing:
+
+
 ``` json
 {
 "user": {
@@ -129,11 +143,17 @@ sample query : /user?id=x&password=y
 ```
 		return 201 if created
 
-/product -- same as users allows getting product info, updating and deleting
+##### /product -- same as users allows getting product info, updating and deleting
 
 sample queries :
+
+
 GET -- 	/product?id=wiertarka&direct=1	
+
+
 PUT -- /product , JSON: 
+
+
 ``` json
 {
 "update": {
@@ -150,10 +170,16 @@ PUT -- /product , JSON:
 DELETE -- /product?id=wierarka&name=konrad&password=test&direct=0
 if direct == 0 get product by uuid
 
+
+
 #### Buying Products
 
-Consumption also implements basic buying functionality available on /products/buy with GET method
+Consumption also implements basic buying functionality 
 
+##### /products/buy
+
+
+Buy an item with given quantity
 it requires following JSON file:
 
 ``` json
@@ -170,10 +196,18 @@ it requires following JSON file:
 }
 }
 ```
+
+Only reqistered users can buy products
 returns code 201 if succesfull
 
 Also you can see which products an user has bought:
-::example query /user/<username>/bought
+##### /user/<username>/bought
+
+Fetches all products bought by user with given username
+
+##### products/top 
+
+Returns list of most bought products
 
 
 
