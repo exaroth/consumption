@@ -719,6 +719,12 @@ class BoughtDBHandler(BaseDBHandler):
         res = self.conn.execute(sel).fetchall()
         return self.parse_list_query_data(res, PRODUCT_FIELDS, key = "product_name")
 
+    def get_users_sold_products(self, username):
+
+        sel = select([products]).where(products.c.seller == username)
+        res = self.conn.execute(sel).fetchall()
+        return self.parse_list_query_data(res, PRODUCT_FIELDS, key = "product_name")
+
     def create_bought_product(self, qty, user_uuid, product_uuid):
 
         """

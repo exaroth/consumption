@@ -58,6 +58,7 @@ class Application(tornado.web.Application):
             (r"/users", UsersHandler),
             (r"/user", UserHandler),
             (r"/user/(\w{4,20})/bought", BoughtProductsHandler),
+            (r"/user/(\w{4,20})/sold", SoldProductsHandler),
             (r"/products", ProductsHandler),
             (r"/product", ProductHandler),
             (r"/products/buy", BuyProductsHandler),
@@ -880,6 +881,7 @@ class BoughtProductsHandler(BaseHandler, BoughtDBHandler):
     """
     Implements function for getting user bought products 
     sample request
+    return 404 if no items found
     www.base.com/user/konrad/bought
     """
 
@@ -893,6 +895,23 @@ class BoughtProductsHandler(BaseHandler, BoughtDBHandler):
 
         except Exception as e:
             self.generic_resp(500, str(e))
+
+class SoldProductsHandler(BaseHandler, BoughtDBHandler):
+    """
+    View for gettting all items that the person is selling 
+    return 404 if no items found
+    """
+    def get(self, username):
+        try:
+            resp = self.get_users_sold_products(username)
+            if not resp:
+                self.generic_resp(404)
+            self.write(json.dumps(resp))
+            return
+
+        except Exception as e:
+            self.generic_resp(500, str(e))
+
 
 
 class AuthenticationHandler(BaseHandler, AuthDBHandler):

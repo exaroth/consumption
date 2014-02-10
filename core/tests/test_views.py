@@ -1050,6 +1050,13 @@ class TestProductOperations(AsyncHTTPTestCase):
         self.assertIn("wiertarka", resp.body)
         self.assertIn("suszarka", resp.body)
 
+        resp = self.fetch("/user/konrad/sold")
+        self.assertEquals(200, resp.code)
+        self.assertIn("wiertarka", resp.body)
+        self.assertIn("suszarka", resp.body)
+        resp = self.fetch("/user/malgosia/sold")
+        self.assertEquals(404, resp.code)
+
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
         engine = create_engine("sqlite:///:memory:")
