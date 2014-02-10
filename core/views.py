@@ -55,6 +55,7 @@ class Application(tornado.web.Application):
 
     def __init__(self, conn):
         handlers = [
+            (r"/", IndexHandler),
             (r"/users", UsersHandler),
             (r"/user", UserHandler),
             (r"/user/(\w{4,20})/bought", BoughtProductsHandler),
@@ -66,7 +67,9 @@ class Application(tornado.web.Application):
             (r"/auth", AuthenticationHandler),
         ]
         settings = {
-            "debug": DEBUG
+            "debug": DEBUG,
+            "template_path": BASE_PATH + "/templates",
+            "static_path": BASE_PATH + "/static"
         }
         super(Application, self).__init__(handlers, **settings)
         self.conn = conn
@@ -204,6 +207,12 @@ class BaseHandler(tornado.web.RequestHandler):
         return authenticated
 
 
+class IndexHandler(tornado.web.RequestHandler):
+    def get(self):
+        """
+        Renders index 
+        """
+        self.render("index.html", host = self.request.protocol + "://" + self.request.host )
 
 class UsersHandler(BaseHandler, UserDatabaseHandler):
     
@@ -332,7 +341,7 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
 
         """
                 
-        identifier = self.get_query_argument("id")
+        identifier = self.get_query_argument("id", None)
         password = self.get_query_argument("password", None)
         direct_arg = self.get_query_argument("direct", 0)
         try:
@@ -964,8 +973,7 @@ class AuthenticationHandler(BaseHandler, AuthDBHandler):
         
 
 
-if __name__ == "__main__":
-
+def main():
     sys.path.append(os.path.dirname(os.path.realpath(__file__)))
     tornado.options.parse_command_line()
     app = Application(engine.connect())

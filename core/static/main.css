@@ -1,0 +1,42 @@
+.main-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #fcfdfa;
+
+}
+.top-bar {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-color: #18153f;
+    color: white;
+
+}
+.top-bar h3 {
+    color: black;
+}
+.logo-wrapper {
+	position: absolute;
+	bottom: -48px;
+	margin-left: 10%;
+}
+
+.form-wrapper {
+    margin-top: 100px;
+
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+}
+
+.form-inner {
+	width: 50%;;
+	height: auto;
+	margin: 0 auto;
+}
+
+.data-received {
+	margin-top: 50px;
+}

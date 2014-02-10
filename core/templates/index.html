@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %} 
+
+<!-- <h1>{{ host }}</h1> -->
+
+<div class="main-wrapper">
+
+    <div class="top-bar">
+	<div class="logo-wrapper">
+	<h1>Consumption</h1>
+	<h3>Asynchronous JSON API</h3>
+	</div>
+    </div>
+
+    <div class="form-wrapper">
+	
+	<div class="form-inner">
+	    <form class="form-horizontal req-form" role="form" action="">
+		<legend>
+		    Enter query and click Submit <br />
+		</legend>
+		    <small class="text-muted">All requests are automatically directed to: {{ host }}</small>
+		<div class="form-group">
+		    <input type="text" name="q" id="q" value="" class="form-control" placeholder=" /user?username=konrad" />
+		</div>
+		<div class="form-group">
+		    <textarea id="" class="form-control req-body" name="" cols="30" rows="10" placeholder="Insert body of the request here"></textarea>
+		</div>
+		<div class="radio-inline">
+		    <label for="">
+			<input checked id="get" type="radio" name="reqOptions" value="GET" />
+			GET
+		    </label>
+		</div>
+		<div class="radio-inline">
+		    <label for="">
+			<input id="post" type="radio" name="reqOptions" value="POST" />
+			POST
+		    </label>
+		</div>
+		<div class="radio-inline">
+		    <label for="">
+			<input id="put" type="radio" name="reqOptions" value="PUT" />
+			PUT
+		    </label>
+		</div>
+		
+		<div class="radio-inline">
+		    <label for="">
+			<input id="delete" type="radio" name="reqOptions" value="DELETE" />
+			DELETE
+		    </label>
+		</div>
+
+		<input class="btn btn-lg btn-danger pull-right" type="submit" value="Submit" />
+	    </form>
+	    <div class="well data-received">
+		<p class="text-warning status-text"></p>
+		<div class="response-text">
+		</div>
+	</div>
+	</div>
+
+    </div>
+
+
+
+
+</div>
+
+{% end %}
