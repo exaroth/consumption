@@ -59,49 +59,56 @@ Consumption provides 2 base adresses for interacting with user accounts:
 ##### /users 
 
 
-    -- GET method fetches a list of users
-	also you can set up limit and offset for easy pagination
-	example query:
-	:: /users?limit=10&offset=15
-	also returns _metadata object containing current offset limit and total number of users
+-- GET method fetches a list of users
+also you can set up limit and offset for easy pagination
+example query:
+:: /users?limit=10&offset=15
+also returns _metadata object containing current offset limit and total number of users
 
 
 
-   -- POST creates new user requires properly parsed JSON file eg.
-   ``` json
-	{
+-- POST creates new user requires properly parsed JSON file eg.
+
+
+
+``` json
+{
 	"users": {
 	"username": "konrad",
 	"password": "test",
 	"email": "konrad@gmail.com"
-	}
+}
 } 
-``` json
+```
+
+
 -- behind the scenes it hashes the password, creates unique user_uuid key, checks for uniqueness and parses input values -- Returns code 201 if succesful
 
 ##### /user
 
 
 --GET - get single user information, by default it uses uuid to check for match
-	 - this can be changed by providing direct=0 parameter in query,
-	 aswell as password value, if username and password are verified returns 
-	 detailed user info
-	 sample request:
-	 /user?id=konrad&direct=0 -- returns globally visible info
-	 /user?id=konrad&password=test&direct=0 -- returns detailed info
-	 /user?id=16fd2706-8baf-433b-82eb-8c7fada847da -- gets user by uuid
+- this can be changed by providing direct=0 parameter in query,
+aswell as password value, if username and password are verified returns 
+detailed user info
+sample request:
+/user?id=konrad&direct=0 -- returns globally visible info
+/user?id=konrad&password=test&direct=0 -- returns detailed info
+/user?id=16fd2706-8baf-433b-82eb-8c7fada847da -- gets user by uuid
 
 
 --PUT - updates user information requires proper username and password in query string 
 along with data to update (this should be changed tbh), body JSON file shoucl look
 along with this lines:
-query /user?username=x&password=y
+##### /user?username=x&password=y
+
+
 ``` json
 {
 	"update": {
-		"password": "changed",
-		"email": "changed@changed.com"
-	}
+	"password": "changed",
+	"email": "changed@changed.com"
+}
 }
 ```
 Only fields specified in CUSTOM_USER_FIELDS can be changed
@@ -114,34 +121,34 @@ sample query : /user?id=x&password=y
 #### Product Interaction
 
 ##### /products
- -- similarly to /users implements methods for creating new product and getting product list
+-- similarly to /users implements methods for creating new product and getting product list
 
 
- -- GET -- returns product list with given limit and offser -- sample query:
- 	/products -- returns first 10 items
- 	/products?limit=10&offset=20 -- limits to 10 and offset 20
+-- GET -- returns product list with given limit and offser -- sample query:
+/products -- returns first 10 items
+/products?limit=10&offset=20 -- limits to 10 and offset 20
 
 
 
- --POST -- creates a new product, only users with existing account can do that
- 		requires JSON file containing:
+--POST -- creates a new product, only users with existing account can do that
+requires JSON file containing:
 
 
 ``` json
 {
-"user": {
+	"user": {
 	"username": "konrad",
 	"password": "test"
 },
 "product": {
-	"product_name": "wiertarka",
-	"product_desc": "wrrumm",
-	"category": "narzedzia" -- optional defaults to "Other",
-	"price": "String containing price"
+"product_name": "wiertarka",
+"product_desc": "wrrumm",
+"category": "narzedzia" -- optional defaults to "Other",
+"price": "String containing price"
 }
 }
 ```
-		return 201 if created
+return 201 if created
 
 ##### /product -- same as users allows getting product info, updating and deleting
 
@@ -156,9 +163,9 @@ PUT -- /product , JSON:
 
 ``` json
 {
-"update": {
-"product_name": "wiertarka" -- required even though cannot be changed,
-"product_desc": "changed"
+	"update": {
+	"product_name": "wiertarka" -- required even though cannot be changed,
+	"product_desc": "changed"
 },
 "user": {
 "username": "konrad",
@@ -184,10 +191,10 @@ it requires following JSON file:
 
 ``` json
 {
-"user": {
-"user_uuid": "16fd2706-8baf-433b-82eb-8c7fada847da",
-"username": "konrad" -- of not provided looks by uuid,
-"password": "test"
+	"user": {
+	"user_uuid": "16fd2706-8baf-433b-82eb-8c7fada847da",
+	"username": "konrad" -- of not provided looks by uuid,
+	"password": "test"
 },
 "product": {
 "product_uuid": "16fd2706-8baf-433b-82eb-8c7fada847da",
@@ -201,13 +208,23 @@ Only reqistered users can buy products
 returns code 201 if succesfull
 
 Also you can see which products an user has bought:
-##### /user/<username>/bought
+##### /user/username/bought
 
 Fetches all products bought by user with given username
 
 ##### products/top 
 
 Returns list of most bought products
+
+#### Authentication
+
+Consumption implements 2 types of user authentication, one strictly for usage with internal functions and second which is asynchronous and can remotely return either authenticated status
+(0 or 1) or generated secure cookie meant to be used for session (not this cookie is not at all secure it uses SHA1 algorith just as password hashing). To access it:
+
+###### /auth?username=konrad&password=test&persist=0
+
+if perist == 1 returns secure cookie
+
 
 
 
