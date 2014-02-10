@@ -135,7 +135,67 @@ class BaseDBHandler(object):
         delete_q = table.delete().where(column == value)
         self.conn.execute(delete_q)
 
+    def get_scalar(self, output, column, identifier):
+        """
+        output -- value to return (column name)
+        column -- name of the column to look in
+        identifier -- scalar value to look for
+        Returns :
+            Scalar Value or False if not exists
+        """
+        sel = select([output]).where(column == identifier)
+        res = self.conn.execute(sel).scalar()
+        if not res:
+            return False
+        return res
 
+
+    def get_username_by_uuid(self, user_uuid):
+        """
+        Returns username for given uuid or False if not found 
+        """
+
+        return self.get_scalar(users.c.username, users.c.user_uuid, user_uuid)
+
+
+    def get_uuid_by_username(self, username):
+        """
+        Return uuid or False 
+        """
+        return self.get_scalar(users.c.user_uuid, users.c.username, username)
+
+
+        
+    def get_product_name_by_uuid(self, uuid):
+        """
+        Return product_name or False 
+        """
+        return self.get_scalar(products.c.product_name, products.c.product_uuid, uuid)
+
+    def get_uuid_by_product_name(self, product_name):
+        """
+        Return product uuid or False 
+        """
+        return self.get_scalar(products.c.product_uuid, products.c.product_name, product_name)
+
+    def get_credentials(self, identifier):
+        """
+        Return username and password
+        used for user verification
+        identifier might be either uuid or username
+        """
+
+        sel = select([users.c.username, users.c.password])\
+                .where(or_(
+                    users.c.username == identifier,
+                    users.c.user_uuid == identifier
+                ))
+
+        try:
+            res = self.conn.execute(sel).fetchone()
+            return res
+        except:
+            raise
 
 class UserDatabaseHandler(BaseDBHandler):
 
@@ -182,25 +242,6 @@ class UserDatabaseHandler(BaseDBHandler):
         try:
             result = self.conn.execute(sel).scalar()
             return not result
-        except:
-            raise
-
-    def get_credentials(self, identifier):
-        """
-        Return username and password
-        used for user verification
-        identifier might be either uuid or username
-        """
-
-        sel = select([users.c.username, users.c.password])\
-                .where(or_(
-                    users.c.username == identifier,
-                    users.c.user_uuid == identifier
-                ))
-
-        try:
-            res = self.conn.execute(sel).fetchone()
-            return res
         except:
             raise
 
@@ -289,6 +330,7 @@ class UserDatabaseHandler(BaseDBHandler):
             return self.get_row(users, haystack, identifier, USER_FIELDS)
         except:
             raise
+
 
     def delete_user(self, identifier, uuid = True):
         """
@@ -394,121 +436,6 @@ class UserDatabaseHandler(BaseDBHandler):
         except:
             raise
 
-    def increase_bought_qty(self, amount, id):
-        """
-        Increases given product quantity
-        accepts bought products id, and amount to add
-
-        Keyword Arguments:
-        amount -- amount to increase (int),
-        id -- unique bought_item primary key (int)
-        """
-        current = self.conn.execute(select([bought_products.c.quantity])\
-                                    .where(bought_products.c.bought_id == id))\
-                                    .scalar() # get current amount
-        update = bought_products.update()\
-                .where(bought_products.c.bought_id == id)\
-                .values(quantity = (current + amount))
-        trans = self.conn.begin()
-        try:
-            self.conn.execute(update)
-            trans.commit()
-        except Exceptions as e:
-            logging.error(sys.exc_info()[0])
-            trans.rollback()
-            raise
-
-
-    def check_user_bought_product(self, user_uuid, product_uuid):
-
-        """
-        Returns Falsy value if user has not bought product with given uuid else returns 
-        bought product\'s id
-        
-        Keyword Arguments:
-        user_uuid -- unique user\'s uuid,
-        product_uuid -- unique product\'s uuid
-        """
-
-        sel = select([users.c.user_id]).where(users.c.user_uuid == user_uuid)
-
-        user = self.conn.execute(sel).fetchone()
-
-        if not user:
-            return None
-
-        sel = select([bought_products.c.bought_id]).select_from(products.join(bought_products))\
-                .where(and_(products.c.product_uuid == product_uuid,\
-                            bought_products.c.user_id == user[0] ))
-        try:
-            res = self.conn.execute(sel).scalar()
-            return res
-        except:
-            raise
-
-    def create_bought_product(self, qty, user_uuid, product_uuid):
-
-        """
-        Create new bought item given product_uuid and user_uuid 
-        of product or user with given uuid doesnt exists returns None
-
-        Returns primary_key that has been inserted
-        
-        Keyword Arguments:
-        qty -- amount of items bought (int),
-        user_uuid -- unique user uuid (str),
-        product_uuid -- unique product uuid (str)
-        """
-        try:
-            user_id = self.conn.execute(select([users.c.user_id])\
-                                        .where(users.c.user_uuid == user_uuid)).scalar()
-            product_id = self.conn.execute(select([products.c.product_id])\
-                                       .where(products.c.product_uuid == product_uuid)).scalar()
-        except:
-            raise
-        if product_id and user_id:
-            ins = bought_products.insert()\
-                    .values(quantity = qty, user_id = user_id, product_id = product_id)
-            trans = self.conn.begin()
-            try:
-                res = self.conn.execute(ins)
-                trans.commit()
-                return res.inserted_primary_key[0]
-            except Exception as e:
-                trans.rollback()
-                raise
-                logging.error(sys.exc_info[0])
-        else:
-            return
-
-
-    def add_bought_product(self, quantity, user_uuid, product_uuid):
-
-        """
-        Wrapper for create_bought_product, and increase_bought_quantity,
-        if item is already bought by user increase quantity
-        else create new record.
-        
-        Keyword Arguments:
-        quantity -- amount of items bought (int),
-        user_uuid -- unique user uuid (str),
-        product_uuid -- unique product uuid (str)
-
-        """
-        try:
-            bought = self.check_user_bought_product(user_uuid, product_uuid) # check if user bought item    
-        except:
-            raise
-        if bought:
-            try:
-                self.increase_bought_qty(quantity, bought) # if yes increase quantity
-            except:
-                raise
-        else:
-            try:
-                self.create_bought_product(quantity, user_uuid, product_uuid) # else create new record
-            except:
-                raise
 
     def _delete_all_users(self):
         """
@@ -701,23 +628,6 @@ class ProductDatabaseHandler(BaseDBHandler):
             return self.parse_list_query_data(res, PRODUCT_FIELDS)
         return self.get_all_rows(products, PRODUCT_FIELDS, limit, offset)
 
-    def get_top_selling_products(self, limit=10):
-        """
-        Returns list of most selled products
-        limit -- (optional) limit the results, defaults to 10
-        """
-        sel = select([products.c.product_name, products.c.product_uuid, func.sum(bought_products.c.quantity).label("sum")])\
-                .select_from(products.join(bought_products))\
-                .group_by(bought_products.c.product_id)\
-                .order_by(desc("sum")).limit(limit)
-
-        top_products = self.conn.execute(sel).fetchall()
-
-        # result = dict()
-        # for product_item in top_products:
-        #     result[product_item[1]] = product_item[0]
-        # return result
-        return self.parse_list_query_data(top_products, ("product_name", "product_uuid", "quantity"), "product_name", True)
 
     def get_all_sold_products(self, limit = None):
 
@@ -743,6 +653,158 @@ class ProductDatabaseHandler(BaseDBHandler):
     def _get_all_products(self):
         sel = select([products])
         return self.parse_list_query_data(self.conn.execute(sel), PRODUCT_FIELDS, "product_name")
+
+class BoughtDBHandler(BaseDBHandler):
+
+    def increase_bought_qty(self, amount, id):
+        """
+        Increases given product quantity
+        accepts bought products id, and amount to add
+
+        Keyword Arguments:
+        amount -- amount to increase (int),
+        id -- unique bought_item primary key (int)
+        """
+        current = self.conn.execute(select([bought_products.c.quantity])\
+                                    .where(bought_products.c.bought_id == id))\
+                                    .scalar() # get current amount
+        update = bought_products.update()\
+                .where(bought_products.c.bought_id == id)\
+                .values(quantity = (current + amount))
+        trans = self.conn.begin()
+        try:
+            self.conn.execute(update)
+            trans.commit()
+        except Exceptions as e:
+            logging.error(sys.exc_info()[0])
+            trans.rollback()
+            raise
+
+
+    def check_user_bought_product(self, user_uuid, product_uuid):
+
+        """
+        Returns Falsy value if user has not bought product with given uuid else returns 
+        bought product\'s id
+        
+        Keyword Arguments:
+        user_uuid -- unique user\'s uuid,
+        product_uuid -- unique product\'s uuid
+        """
+
+        sel = select([users.c.user_id]).where(users.c.user_uuid == user_uuid)
+
+        user = self.conn.execute(sel).fetchone()
+
+        if not user:
+            return None
+
+        sel = select([bought_products.c.bought_id]).select_from(products.join(bought_products))\
+                .where(and_(products.c.product_uuid == product_uuid,\
+                            bought_products.c.user_id == user[0] ))
+        try:
+            res = self.conn.execute(sel).scalar()
+            return res
+        except:
+            raise
+
+    def get_users_bought_products(self, identifier, uuid = True):
+        if uuid:
+            haystack = users.c.user_uuid
+        else:
+            haystack = users.c.username
+        sel = select([products]).select_from(products.join(bought_products).join(users))\
+                .where(haystack == identifier)
+
+        res = self.conn.execute(sel).fetchall()
+        return self.parse_list_query_data(res, PRODUCT_FIELDS, key = "product_name")
+
+    def create_bought_product(self, qty, user_uuid, product_uuid):
+
+        """
+        Create new bought item given product_uuid and user_uuid 
+        of product or user with given uuid doesnt exists returns None
+
+        Returns primary_key that has been inserted
+        
+        Keyword Arguments:
+        qty -- amount of items bought (int),
+        user_uuid -- unique user uuid (str),
+        product_uuid -- unique product uuid (str)
+        """
+        try:
+            user_id = self.conn.execute(select([users.c.user_id])\
+                                        .where(users.c.user_uuid == user_uuid)).scalar()
+            product_id = self.conn.execute(select([products.c.product_id])\
+                                       .where(products.c.product_uuid == product_uuid)).scalar()
+        except:
+            raise
+        if product_id and user_id:
+            ins = bought_products.insert()\
+                    .values(quantity = qty, user_id = user_id, product_id = product_id)
+            trans = self.conn.begin()
+            try:
+                res = self.conn.execute(ins)
+                trans.commit()
+                return res.inserted_primary_key[0]
+            except Exception as e:
+                trans.rollback()
+                raise
+                logging.error(sys.exc_info[0])
+        else:
+            return
+
+
+    def add_bought_product(self, quantity, user_uuid, product_uuid):
+
+        """
+        Wrapper for create_bought_product, and increase_bought_quantity,
+        if item is already bought by user increase quantity
+        else create new record.
+        
+        Keyword Arguments:
+        quantity -- amount of items bought (int),
+        user_uuid -- unique user uuid (str),
+        product_uuid -- unique product uuid (str)
+
+        """
+        try:
+            bought = self.check_user_bought_product(user_uuid, product_uuid) # check if user bought item    
+        except:
+            raise
+        if bought:
+            try:
+                self.increase_bought_qty(quantity, bought) # if yes increase quantity
+            except:
+                raise
+        else:
+            try:
+                self.create_bought_product(quantity, user_uuid, product_uuid) # else create new record
+            except:
+                raise
+
+
+
+class MiscDBHandler(BaseDBHandler):
+    """
+    Miscelannelous utility functions 
+    """
+
+
+    def get_top_selling_products(self, limit=10):
+        """
+        Returns list of most selled products
+        limit -- (optional) limit the results, defaults to 10
+        """
+        sel = select([products.c.product_name, products.c.product_uuid, func.sum(bought_products.c.quantity).label("sum")])\
+                .select_from(products.join(bought_products))\
+                .group_by(bought_products.c.product_id)\
+                .order_by(desc("sum")).limit(limit)
+
+        top_products = self.conn.execute(sel).fetchall()
+
+        return self.parse_list_query_data(top_products, ("product_name", "product_uuid", "quantity"), "product_name", True)
+
 
 class AuthDBHandler(object):
     """

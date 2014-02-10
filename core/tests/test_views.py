@@ -842,6 +842,214 @@ class TestProductOperations(AsyncHTTPTestCase):
         self.assertEquals(401, res.code)
 
 
+    def test_buying_products(self):
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "exaroth@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "wruumm",
+            category = "All",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            # product_uuid = "deprofundis",
+            quantity = 20
+        )
+
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(201, resp.code)
+
+        sel = select([bought_products]).where(bought_products.c.user_id == 2)
+
+        res = self.conn.execute(sel).fetchone()
+        self.assertIn(20, list(res))
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            # product_uuid = "deprofundis",
+            quantity = 15
+        )
+
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(201, resp.code)
+        sel = select([bought_products]).where(bought_products.c.user_id == 2)
+
+        res = self.conn.execute(sel).fetchone()
+        self.assertIn(35, list(res))
+
+        # test for wrong user
+        data = dict()
+        data["user"] = dict(
+            username = "invalid",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            # product_uuid = "deprofundis",
+            quantity = 15
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(404, resp.code)
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "invalid"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            # product_uuid = "deprofundis",
+            quantity = 15
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(403, resp.code)
+
+        # test for invalid data
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            quantity = 15
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(404, resp.code)
+
+        data = dict()
+        data["user"] = dict(
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            quantity = 15
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(404, resp.code)
+
+        # nonexistent item
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "invalid"
+        )
+        data["product"] = dict(
+            product_name = "suszarka",
+            # product_uuid = "deprofundis",
+            quantity = 15
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        self.assertEquals(404, resp.code)
+
+    def test_getting_top_products(self):
+        data = dict()
+        data["user"] = dict(
+            username = "konrad",
+            password = "deprofundis",
+            email = "exaroth@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "wiertarka",
+            product_desc = "wruumm",
+            category = "All",
+            price = "120zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        product_data = dict()
+        product_data["user"] = dict(username = "konrad", password = "deprofundis")
+        product_data["product"] = dict(
+            product_name = "suszarka",
+            product_desc = "brummm",
+            category = "rtv",
+            price = "1200zl"
+        )
+        resp = self.fetch("/products", method = "POST", body = json.dumps(product_data))
+        self.assertEquals(201, resp.code)
+
+        resp = self.fetch("/products/top")
+        self.assertEquals(200, resp.code)
+        self.assertIn("No Products", resp.body)
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia",
+            email = "malgosia@gmail.com"
+        )
+        self.fetch("/users", method = "POST", body = json.dumps(data))
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "wiertarka",
+            # product_uuid = "deprofundis",
+            quantity = 20
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+
+        resp = self.fetch("/products/top")
+        self.assertEquals(200, resp.code)
+        self.assertNotIn("No Products", resp.body)
+        self.assertIn("wiertarka", resp.body)
+
+        data = dict()
+        data["user"] = dict(
+            username = "malgosia",
+            password = "malgosia"
+        )
+        data["product"] = dict(
+            product_name = "suszarka",
+            quantity = 2
+        )
+        resp = self.fetch("/products/buy", method = "POST", body = json.dumps(data))
+        resp = self.fetch("/products/top")
+        self.assertEquals(200, resp.code)
+        self.assertIn("suszarka", resp.body)
+
+        resp = self.fetch("/user/malgosia/bought")
+        self.assertEquals(200, resp.code)
+        self.assertIn("wiertarka", resp.body)
+        self.assertIn("suszarka", resp.body)
+
 class TestAuthentication(AsyncHTTPTestCase):
     def get_app(self):
         engine = create_engine("sqlite:///:memory:")

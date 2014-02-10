@@ -26,7 +26,7 @@ from datetime import datetime
 
 from config import *
 from models import users, bought_products, products, engine
-from db_base import UserDatabaseHandler, ProductDatabaseHandler, AuthDBHandler
+from db_base import UserDatabaseHandler, ProductDatabaseHandler, AuthDBHandler, MiscDBHandler, BoughtDBHandler
 from helper_functions import generate_password_hash, check_password_hash, generate_secure_cookie, check_secure_cookie
 
 
@@ -57,11 +57,12 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/users", UsersHandler),
             (r"/user", UserHandler),
+            (r"/user/(\w{4,20})/bought", BoughtProductsHandler),
             (r"/products", ProductsHandler),
             (r"/product", ProductHandler),
+            (r"/products/buy", BuyProductsHandler),
+            (r"/products/top", TopProductsHandler),
             (r"/auth", AuthenticationHandler),
-            # (r"/test", TestHandler)
-
         ]
         settings = {
             "debug": DEBUG
@@ -73,7 +74,7 @@ class Application(tornado.web.Application):
 class BaseHandler(tornado.web.RequestHandler):
 
     """
-    Base handler implementing basic methods and configuring basic
+    Base handler implementing basic methods and configuring 
     settings for other handlers
     """
 
@@ -173,6 +174,33 @@ class BaseHandler(tornado.web.RequestHandler):
         req = HTTPRequest(self.get_self_url(query), method = "GET")
         res = yield gen.Task(AsyncHTTPClient().fetch, req)
         raise gen.Return(res.body)
+    
+    @gen.coroutine
+    def get_user_data(self, identifier, direct = 0):
+        """
+        Return user information
+        if direct == 1 looks by user_uuid
+        """
+        query = "/user/?id=" + identifier + "&direct=" + str(direct)
+        req = HTTPRequest(self.get_self_url(query), method = "GET")
+        res = yield gen.Task(AsyncHTTPClient().fetch, req)
+        raise gen.Return(res.body)
+
+    @tornado.web.asynchronous
+    def authenticate_user(self, unique, password):
+        """
+        Basic authentication function 
+        used for synchronously fetch user information
+        requires unique identifier (username or uuid) and password
+        Returns : bool
+        """
+        user = self.get_credentials(unique)
+
+        if not user:
+            return False
+
+        authenticated = check_password_hash(password, user[1])
+        return authenticated
 
 
 
@@ -278,20 +306,6 @@ class UserHandler(BaseHandler, UserDatabaseHandler):
     DELETE -- deletes user
     """
 
-    @tornado.web.asynchronous
-    def authenticate_user(self, unique, password):
-        """
-        Basic authentication function 
-        requires unique identifier (username or uuid) and password
-        Returns : bool
-        """
-        user = self.get_credentials(unique)
-
-        if not user:
-            return False
-
-        authenticated = check_password_hash(password, user[1])
-        return authenticated
 
 
     @tornado.web.asynchronous
@@ -454,7 +468,7 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
             www.base.com/products?limit=x&offset=y
         Returns:
             json containing list of products
-            as well as _metadata containing current
+            as well as _metadata with current
             limit, offset and total number of products
         """
 
@@ -529,13 +543,11 @@ class ProductsHandler(BaseHandler, ProductDatabaseHandler):
 
         # implement cookie authentication
 
-        path = self.get_self_url("/auth?username=" + user_data["username"]+ "&password=" + user_data["password"]+ "&persist=0")
-        req = HTTPRequest(path, method = "GET")
 
-        resp = yield self.client.fetch(req)
+        resp = yield self.remote_auth(user_data["username"], user_data["password"], persist = 0)
 
         try:
-            authenticated = int(resp.body)
+            authenticated = int(resp)
         except Exception as e:
             self.generic_resp(500, str(e))
             return
@@ -762,10 +774,125 @@ class ProductHandler(BaseHandler, ProductDatabaseHandler):
             return
 
 
+class TopProductsHandler(BaseHandler, MiscDBHandler):
+    """
+    Simple handler for getting most selled products 
+    accepts optional limit argument
+    """
+    @tornado.web.asynchronous
+    def get(self):
+
+        limit = self.get_query_argument("limit", 10)
+        if limit > 40:
+            limit = 40
+        
+
+        try:
+            top_products = self.get_top_selling_products(limit) or "No Products"
+            self.write(json.dumps(top_products))
+            self.set_status(200)
+            self.finish()
+            return
+        except Exception as e:
+            self.generic_resp(500, str(e))
 
 
-            
+class BuyProductsHandler(BaseHandler, BoughtDBHandler):
 
+    @tornado.web.asynchronous
+    def post(self):
+        """
+        
+        Basic view for buying items by users,
+        implements only post method.
+
+        Requires authentication
+
+        Sample request: www.base.com/products/buy
+
+        Request body should contain valid JSON file
+
+        Sample format:
+            {
+                "user": 
+                    "user_uuid" : "16a0182a-8f58-4c4f-93ca-4ad62287e64f" ,
+                    "username" :"konrad",   --- optional
+                    "password" : "test",
+                    "cookie" : generated_secure_cookie here -- optional -- to implement
+                },
+
+                "product": {
+                    "product_uuid": "fda4a4c4-8c8f-4fc2-8006-bab1556f3045"
+                    "product_name" : "wiertarka", --optional
+                    "quantity": 10
+                }
+
+            }
+
+        """
+
+        try:
+            body = json.loads(self.request.body)
+            user_data = body["user"]
+            product_data = body["product"]
+        except:
+            self.generic_resp(400, "Data not parsed properly")
+            return
+
+    
+        user_id = user_data.get("username", None)
+        if not user_id:
+            user_id = user_data.get("user_uuid", None)
+        else:
+            user_id = self.get_uuid_by_username(user_id)
+
+        product_id = product_data.get("product_name", None)
+        if not product_id:
+            product_id = product_data.get("product_uuid", None)
+        else:
+            product_id = self.get_uuid_by_product_name(product_id)
+
+        if not product_id or not user_id:
+            self.generic_resp(404)
+            return
+
+
+        # authenticate
+        password = user_data.get("password", None)
+        quantity = product_data.get("quantity", None)
+        if not password or not quantity:
+            self.generic_resp(400, "Data not parsed properly")
+            return
+        authenticated = self.authenticate_user(user_id, password)
+        if not authenticated:
+            self.generic_resp(403, "Invalid username or password")
+            return
+
+        try:
+            self.add_bought_product(quantity, user_id, product_id)
+            self.generic_resp(201, "Bought succesfully")
+        except Exception as e:
+            self.generic_resp(500, str(e))
+
+
+class BoughtProductsHandler(BaseHandler, BoughtDBHandler):
+
+    """
+    Implements function for getting user bought products 
+    sample request
+    www.base.com/user/konrad/bought
+    """
+
+    def get(self, username):
+        try:
+            resp = self.get_users_bought_products(username, uuid = False)
+            if not resp:
+                self.generic_resp(404)
+            self.write(json.dumps(resp))
+            return
+
+        except Exception as e:
+            self.generic_resp(500, str(e))
 
 
 class AuthenticationHandler(BaseHandler, AuthDBHandler):

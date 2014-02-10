@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 
 sys.path.append("..")
-from db_base import BaseDBHandler, UserDatabaseHandler, ProductDatabaseHandler
+from db_base import BaseDBHandler, UserDatabaseHandler, ProductDatabaseHandler, MiscDBHandler, BoughtDBHandler
 from config import *
 
 from models import users, products, metadata, bought_products
@@ -336,20 +336,23 @@ class TestProductsDB(unittest.TestCase):
         sel = select([products.c.product_uuid]).where(products.c.product_id == p5)
         pr5 = self.conn.execute(sel).scalar()
 
-        self.user_handler.add_bought_product(10, user1, pr1)
-        self.user_handler.add_bought_product(101, user2, pr1)
-        self.user_handler.add_bought_product(20, user3, pr1)
-        self.user_handler.add_bought_product(12, user1, pr2)
-        self.user_handler.add_bought_product(18, user2, pr2)
-        self.user_handler.add_bought_product(5, user3, pr2)
-        self.user_handler.add_bought_product(1, user2, pr3)
-        self.user_handler.add_bought_product(18, user1, pr3)
-        self.user_handler.add_bought_product(9, user3, pr3)
-        self.user_handler.add_bought_product(1, user2, pr4)
-        self.user_handler.add_bought_product(1, user1, pr4)
+        bought_hander = BoughtDBHandler(self.conn)
 
+        bought_hander.add_bought_product(10, user1, pr1)
+        bought_hander.add_bought_product(101, user2, pr1)
+        bought_hander.add_bought_product(20, user3, pr1)
+        bought_hander.add_bought_product(12, user1, pr2)
+        bought_hander.add_bought_product(18, user2, pr2)
+        bought_hander.add_bought_product(5, user3, pr2)
+        bought_hander.add_bought_product(1, user2, pr3)
+        bought_hander.add_bought_product(18, user1, pr3)
+        bought_hander.add_bought_product(9, user3, pr3)
+        bought_hander.add_bought_product(1, user2, pr4)
+        bought_hander.add_bought_product(1, user1, pr4)
+        
+        self.misc_handler = MiscDBHandler(self.conn)
 
-        tops = self.product_handler.get_top_selling_products(3)
+        tops = self.misc_handler.get_top_selling_products(3)
 
         self.assertEquals(3, len(tops))
         self.assertEquals(dict, type(tops))
@@ -361,7 +364,7 @@ class TestProductsDB(unittest.TestCase):
         # test that products not bought by anyone are not listed
 
 
-        tops = self.product_handler.get_top_selling_products(10)
+        tops = self.misc_handler.get_top_selling_products(10)
 
         self.assertEquals(4, len(tops))
         self.assertNotIn(u"pralkosuszarka", tops.keys())
@@ -444,7 +447,7 @@ class TestBoughtProductsDB(unittest.TestCase):
     def test_checking_if_user_has_bought_product(self):
 
 
-        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        self.user_handler = BoughtDBHandler(conn = self.conn)
 
         self.assertTrue(self.user_handler.check_user_bought_product(self.uuid1, self.product_uuid1))
         self.assertFalse(self.user_handler.check_user_bought_product(self.uuid2, self.product_uuid3))
@@ -461,7 +464,7 @@ class TestBoughtProductsDB(unittest.TestCase):
 
     def test_increasing_item_quantity(self):
 
-        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        self.user_handler = BoughtDBHandler(conn = self.conn)
 
         # konrad buys 1 product
         self.user_handler.increase_bought_qty(1, 1)
@@ -492,7 +495,7 @@ class TestBoughtProductsDB(unittest.TestCase):
         self.conn.execute(new_product)
 
 
-        self.user_handler = UserDatabaseHandler(conn = self.conn)
+        self.user_handler = BoughtDBHandler(conn = self.conn)
 
         # Konrad buys 10 hantle items
         self.user_handler.create_bought_product(10, self.uuid3, new_uuid )
@@ -524,14 +527,15 @@ class TestBoughtProductsDB(unittest.TestCase):
         
 
         #test adding new item
+        self.bought_handler = BoughtDBHandler(self.conn)
 
-        self.user_handler.add_bought_product(10, self.uuid1, new_uuid)
+        self.bought_handler.add_bought_product(10, self.uuid1, new_uuid)
         sel = select([products]).select_from(products.join(bought_products).join(users)).group_by(bought_products.c.product_id)
         konrad_items = self.conn.execute(sel).fetchall()
         self.assertEquals(4, len(konrad_items))
         self.assertEquals(u"hantle", konrad_items[len(konrad_items) - 1][2])
 
-        bought_id = self.user_handler.check_user_bought_product(self.uuid1, new_uuid)
+        bought_id = self.bought_handler.check_user_bought_product(self.uuid1, new_uuid)
         self.assertTrue(bought_id)
 
         bought_quantity = select([bought_products.c.quantity]).where(bought_products.c.bought_id == bought_id)
@@ -542,10 +546,10 @@ class TestBoughtProductsDB(unittest.TestCase):
         # test increasing quantity of item already on the list
 
 
-        self.user_handler.add_bought_product(2, self.uuid1, new_uuid)
+        self.bought_handler.add_bought_product(2, self.uuid1, new_uuid)
 
 
-        bought_id = self.user_handler.check_user_bought_product(self.uuid1, new_uuid)
+        bought_id = self.bought_handler.check_user_bought_product(self.uuid1, new_uuid)
         self.assertTrue(bought_id)
 
         sel = select([products]).select_from(products.join(bought_products).join(users)).group_by(bought_products.c.product_id)
