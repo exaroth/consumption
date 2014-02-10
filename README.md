@@ -95,9 +95,9 @@ query /user?username=x&password=y
 		"email": "changed@changed.com"
 	}
 }
+```
 only fields specified in CUSTOM_USER_FIELDS can be changed
 returns code 201 if succesful
-```
 -- DELETE -- deletes the user requires only proper username and password,
 sample query : /user?id=x&password=y
 
@@ -113,20 +113,20 @@ sample query : /user?id=x&password=y
 
  --POST -- creates a new product, only users with existing account can do that
  		requires JSON file containing:
-		``` json
-	{
-		"user": {
-			"username": "konrad",
-			"password": "test"
-		},
-		"product": {
-			"product_name": "wiertarka",
-			"product_desc": "wrrumm",
-			"category": "narzedzia" -- optional defaults to "Other",
-			"price": "String containing price"
-		}
-	}
-	```
+``` json
+{
+"user": {
+	"username": "konrad",
+	"password": "test"
+},
+"product": {
+	"product_name": "wiertarka",
+	"product_desc": "wrrumm",
+	"category": "narzedzia" -- optional defaults to "Other",
+	"price": "String containing price"
+}
+}
+```
 		return 201 if created
 
 /product -- same as users allows getting product info, updating and deleting
@@ -145,7 +145,7 @@ PUT -- /product , JSON:
 "password": "test"
 }
 }
-``` json
+``` 
 
 DELETE -- /product?id=wierarka&name=konrad&password=test&direct=0
 if direct == 0 get product by uuid
@@ -171,6 +171,9 @@ it requires following JSON file:
 }
 ```
 returns code 201 if succesfull
+
+Also you can see which products an user has bought:
+::example query /user/<username>/bought
 
 
 
